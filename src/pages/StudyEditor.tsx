@@ -163,7 +163,7 @@ export default function StudyEditor() {
       return;
     }
     try {
-      const { fileName } = await generateConsentDocx(study, assembled);
+      const { fileName } = await generateConsentDocx(study, assembled, clauseEdits);
       if (studyId) {
         await supabase.from('generated_documents').insert({
           study_id: studyId,
