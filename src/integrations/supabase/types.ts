@@ -17,47 +17,56 @@ export type Database = {
       clauses: {
         Row: {
           active: boolean
+          clause_key: string
           clause_text: string
-          clause_title: string
-          clause_type: string
+          content_type: Database["public"]["Enums"]["clause_content_type"]
           created_at: string
-          exclusion_group: string | null
+          editable_fields: Json | null
           id: string
-          section_name: string
+          must_include: boolean
+          mutually_exclusive_group: string | null
+          required_level: Database["public"]["Enums"]["clause_required_level"]
+          section: string
           sort_order: number
-          subsection_name: string | null
+          subsection: string
           template_version: string
-          trigger_json: Json | null
+          trigger_expression: Json | null
           updated_at: string
         }
         Insert: {
           active?: boolean
+          clause_key?: string
           clause_text: string
-          clause_title: string
-          clause_type: string
+          content_type?: Database["public"]["Enums"]["clause_content_type"]
           created_at?: string
-          exclusion_group?: string | null
+          editable_fields?: Json | null
           id?: string
-          section_name: string
+          must_include?: boolean
+          mutually_exclusive_group?: string | null
+          required_level?: Database["public"]["Enums"]["clause_required_level"]
+          section?: string
           sort_order?: number
-          subsection_name?: string | null
+          subsection?: string
           template_version: string
-          trigger_json?: Json | null
+          trigger_expression?: Json | null
           updated_at?: string
         }
         Update: {
           active?: boolean
+          clause_key?: string
           clause_text?: string
-          clause_title?: string
-          clause_type?: string
+          content_type?: Database["public"]["Enums"]["clause_content_type"]
           created_at?: string
-          exclusion_group?: string | null
+          editable_fields?: Json | null
           id?: string
-          section_name?: string
+          must_include?: boolean
+          mutually_exclusive_group?: string | null
+          required_level?: Database["public"]["Enums"]["clause_required_level"]
+          section?: string
           sort_order?: number
-          subsection_name?: string | null
+          subsection?: string
           template_version?: string
-          trigger_json?: Json | null
+          trigger_expression?: Json | null
           updated_at?: string
         }
         Relationships: []
@@ -270,6 +279,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      clause_content_type:
+        | "locked"
+        | "required_editable"
+        | "free_text"
+        | "conditional_pack"
+      clause_required_level: "required" | "conditional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -398,6 +413,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      clause_content_type: [
+        "locked",
+        "required_editable",
+        "free_text",
+        "conditional_pack",
+      ],
+      clause_required_level: ["required", "conditional"],
     },
   },
 } as const
