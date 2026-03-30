@@ -17,6 +17,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { CONSENT_SECTIONS } from '@/lib/types';
 import { ArrowLeft, Plus, Pencil, Copy, EyeOff, Eye, Lock, PenLine, FileText, GitBranch } from 'lucide-react';
+import ClauseImportDialog from '@/components/ClauseImportDialog';
 
 interface Clause {
   id: string;
