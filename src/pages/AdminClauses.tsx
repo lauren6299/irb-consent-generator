@@ -200,7 +200,8 @@ export default function AdminClauses() {
           </Button>
           <h1 className="font-heading text-lg font-semibold">Clause Library</h1>
           <Badge variant="secondary" className="text-xs">{filtered.length} clauses</Badge>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ClauseImportDialog onImported={loadClauses} />
             <Button size="sm" onClick={() => openForm()}>
               <Plus className="h-4 w-4 mr-1" /> Add Clause
             </Button>
