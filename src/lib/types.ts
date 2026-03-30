@@ -24,6 +24,8 @@ export interface StudyAnswers {
   has_optional_followup_visits: boolean;
   interventional_study: boolean;
   has_study_visits: boolean;
+  required_visit_schedule_text: string;
+  optional_followup_text: string;
 
   // Specimens
   specimens: 'no_storage' | 'stored_this_study' | 'stored_future_research' | '';
