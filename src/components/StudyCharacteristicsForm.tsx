@@ -3,6 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 
 interface Props {
@@ -110,6 +111,30 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
           <ToggleRow answers={answers} onChange={onChange} items={[
             ['interventional_study', 'Interventional Study'],
           ]} />
+          {(answers.has_single_visit || answers.has_multiple_required_visits) && (
+            <div className="space-y-1">
+              <Label htmlFor="required_visit_schedule_text" className="text-sm">Required visit schedule</Label>
+              <Textarea
+                id="required_visit_schedule_text"
+                className="text-sm min-h-[60px] bg-background"
+                placeholder="e.g. 3 visits over 6 months, each lasting about 1 hour"
+                value={answers.required_visit_schedule_text || ''}
+                onChange={(e) => onChange({ ...answers, required_visit_schedule_text: e.target.value })}
+              />
+            </div>
+          )}
+          {answers.has_optional_followup_visits && (
+            <div className="space-y-1">
+              <Label htmlFor="optional_followup_text" className="text-sm">Optional follow-up details</Label>
+              <Textarea
+                id="optional_followup_text"
+                className="text-sm min-h-[60px] bg-background"
+                placeholder="e.g. You may be invited back for 1 optional follow-up visit lasting 30 minutes"
+                value={answers.optional_followup_text || ''}
+                onChange={(e) => onChange({ ...answers, optional_followup_text: e.target.value })}
+              />
+            </div>
+          )}
         </div>
       </Section>
 
