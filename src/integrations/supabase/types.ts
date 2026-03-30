@@ -14,16 +14,262 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clauses: {
+        Row: {
+          active: boolean
+          clause_text: string
+          clause_title: string
+          clause_type: string
+          created_at: string
+          exclusion_group: string | null
+          id: string
+          section_name: string
+          sort_order: number
+          subsection_name: string | null
+          template_version: string
+          trigger_json: Json | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          clause_text: string
+          clause_title: string
+          clause_type: string
+          created_at?: string
+          exclusion_group?: string | null
+          id?: string
+          section_name: string
+          sort_order?: number
+          subsection_name?: string | null
+          template_version: string
+          trigger_json?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          clause_text?: string
+          clause_title?: string
+          clause_type?: string
+          created_at?: string
+          exclusion_group?: string | null
+          id?: string
+          section_name?: string
+          sort_order?: number
+          subsection_name?: string | null
+          template_version?: string
+          trigger_json?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      generated_documents: {
+        Row: {
+          document_json: Json
+          file_name: string
+          generated_at: string
+          id: string
+          included_clauses: Json
+          study_id: string
+        }
+        Insert: {
+          document_json?: Json
+          file_name: string
+          generated_at?: string
+          id?: string
+          included_clauses?: Json
+          study_id: string
+        }
+        Update: {
+          document_json?: Json
+          file_name?: string
+          generated_at?: string
+          id?: string
+          included_clauses?: Json
+          study_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_study_id_fkey"
+            columns: ["study_id"]
+            isOneToOne: false
+            referencedRelation: "studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      studies: {
+        Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          pi_name: string | null
+          protocol_number: string | null
+          short_title: string | null
+          sponsor: string | null
+          status: string
+          template_version: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          pi_name?: string | null
+          protocol_number?: string | null
+          short_title?: string | null
+          sponsor?: string | null
+          status?: string
+          template_version?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          pi_name?: string | null
+          protocol_number?: string | null
+          short_title?: string | null
+          sponsor?: string | null
+          status?: string
+          template_version?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_answers: {
+        Row: {
+          answer_data: Json
+          created_at: string
+          id: string
+          study_id: string
+          updated_at: string
+        }
+        Insert: {
+          answer_data?: Json
+          created_at?: string
+          id?: string
+          study_id: string
+          updated_at?: string
+        }
+        Update: {
+          answer_data?: Json
+          created_at?: string
+          id?: string
+          study_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_answers_study_id_fkey"
+            columns: ["study_id"]
+            isOneToOne: false
+            referencedRelation: "studies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      templates: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +396,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
