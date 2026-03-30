@@ -157,7 +157,7 @@ export default function StudyEditor() {
           study_id: studyId,
           file_name: fileName,
           document_json: { study, answers } as any,
-          included_clauses: assembled.map((c) => ({ id: c.id, title: c.clause_title, reason: c.inclusion_reason })) as any,
+          included_clauses: assembled.map((c) => ({ id: c.id, key: c.clause_key, reason: c.inclusion_reason })) as any,
         });
       }
       toast({ title: 'Exported', description: `Downloaded ${fileName}` });
@@ -237,7 +237,7 @@ export default function StudyEditor() {
             <div className="py-3">
               <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sections</p>
               {CONSENT_SECTIONS.map((section) => {
-                const count = assembled.filter((c) => c.section_name === section).length;
+                const count = assembled.filter((c) => c.section === section).length;
                 return (
                   <button
                     key={section}

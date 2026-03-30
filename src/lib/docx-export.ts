@@ -13,10 +13,9 @@ import {
 import { saveAs } from 'file-saver';
 
 interface ExportClause {
-  section_name: string;
-  clause_title: string;
+  section: string;
   clause_text: string;
-  clause_type: string;
+  content_type: string;
   inclusion_reason: string;
 }
 
@@ -37,7 +36,6 @@ export async function generateConsentDocx(
 ) {
   const children: Paragraph[] = [];
 
-  // Title page
   children.push(
     new Paragraph({
       children: [new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, size: 28, font: 'Arial' })],
@@ -67,11 +65,10 @@ export async function generateConsentDocx(
     })
   );
 
-  // Group clauses by section
   let currentSection = '';
   for (const clause of clauses) {
-    if (clause.section_name !== currentSection) {
-      currentSection = clause.section_name;
+    if (clause.section !== currentSection) {
+      currentSection = clause.section;
       children.push(
         new Paragraph({
           heading: HeadingLevel.HEADING_1,
@@ -82,7 +79,6 @@ export async function generateConsentDocx(
       );
     }
 
-    // Clause content
     const lines = clause.clause_text.split('\n');
     for (const line of lines) {
       const processedLine = line
@@ -104,7 +100,6 @@ export async function generateConsentDocx(
     }
   }
 
-  // Disclaimer
   children.push(
     new Paragraph({ spacing: { before: 600 }, children: [] }),
     new Paragraph({
