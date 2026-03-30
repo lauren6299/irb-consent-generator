@@ -157,7 +157,7 @@ export default function StudyEditor() {
           study_id: studyId,
           file_name: fileName,
           document_json: { study, answers } as any,
-          included_clauses: assembled.map((c) => ({ id: c.id, title: c.clause_title, reason: c.inclusion_reason })) as any,
+          included_clauses: assembled.map((c) => ({ id: c.id, key: c.clause_key, reason: c.inclusion_reason })) as any,
         });
       }
       toast({ title: 'Exported', description: `Downloaded ${fileName}` });
