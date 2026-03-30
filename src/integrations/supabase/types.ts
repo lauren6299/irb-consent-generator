@@ -284,7 +284,8 @@ export type Database = {
         | "required_editable"
         | "free_text"
         | "conditional_pack"
-      clause_required_level: "required" | "conditional"
+        | "structured_block"
+      clause_required_level: "required" | "conditional" | "optional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -418,8 +419,9 @@ export const Constants = {
         "required_editable",
         "free_text",
         "conditional_pack",
+        "structured_block",
       ],
-      clause_required_level: ["required", "conditional"],
+      clause_required_level: ["required", "conditional", "optional"],
     },
   },
 } as const
