@@ -48,6 +48,12 @@ function ToggleRow({ items, answers, onChange }: { items: [keyof StudyAnswers, s
 export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
   const set = (key: keyof StudyAnswers, value: string) => onChange({ ...answers, [key]: value });
 
+  const toggleVisit = (key: 'has_single_visit' | 'has_multiple_required_visits' | 'has_optional_followup_visits') => {
+    const updated = { ...answers, [key]: !answers[key] };
+    updated.has_study_visits = updated.has_single_visit || updated.has_multiple_required_visits || updated.has_optional_followup_visits;
+    onChange(updated);
+  };
+
   return (
     <div className="space-y-6">
       <h3 className="font-heading text-lg font-semibold">Study Characteristics</h3>
@@ -91,17 +97,18 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
       {/* Study Design */}
       <Section title="Study Design">
         <div className="space-y-3">
-          <Select value={answers.study_design} onValueChange={(v) => set('study_design', v)}>
-            <SelectTrigger><SelectValue placeholder="Select study design" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="single_visit">Single Visit</SelectItem>
-              <SelectItem value="multiple_visits">Multiple Visits</SelectItem>
-              <SelectItem value="optional_second_visit">Optional Second Visit</SelectItem>
-            </SelectContent>
-          </Select>
+          {([
+            ['has_single_visit', 'Single required visit'],
+            ['has_multiple_required_visits', 'Multiple required visits'],
+            ['has_optional_followup_visits', 'Optional follow-up visit(s)'],
+          ] as const).map(([key, label]) => (
+            <div key={key} className="flex items-center justify-between">
+              <Label htmlFor={key} className="text-sm">{label}</Label>
+              <Switch id={key} checked={answers[key] as boolean} onCheckedChange={() => toggleVisit(key)} />
+            </div>
+          ))}
           <ToggleRow answers={answers} onChange={onChange} items={[
             ['interventional_study', 'Interventional Study'],
-            ['has_study_visits', 'Has Study Visits'],
           ]} />
         </div>
       </Section>

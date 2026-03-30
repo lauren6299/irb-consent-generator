@@ -18,7 +18,10 @@ export interface StudyAnswers {
   data_type: 'identifiable' | 'coded' | 'anonymous' | '';
 
   // Study design
-  study_design: 'single_visit' | 'multiple_visits' | 'optional_second_visit' | '';
+  study_design: 'single_visit' | 'multiple_visits' | 'optional_second_visit' | ''; // legacy
+  has_single_visit: boolean;
+  has_multiple_required_visits: boolean;
+  has_optional_followup_visits: boolean;
   interventional_study: boolean;
   has_study_visits: boolean;
 
@@ -110,6 +113,9 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   procedure_recording: false,
   data_type: '',
   study_design: '',
+  has_single_visit: false,
+  has_multiple_required_visits: false,
+  has_optional_followup_visits: false,
   interventional_study: false,
   has_study_visits: false,
   specimens: '',
