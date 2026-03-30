@@ -18,7 +18,10 @@ export interface StudyAnswers {
   data_type: 'identifiable' | 'coded' | 'anonymous' | '';
 
   // Study design
-  study_design: 'single_visit' | 'multiple_visits' | 'optional_second_visit' | '';
+  study_design: 'single_visit' | 'multiple_visits' | 'optional_second_visit' | ''; // legacy
+  has_single_visit: boolean;
+  has_multiple_required_visits: boolean;
+  has_optional_followup_visits: boolean;
   interventional_study: boolean;
   has_study_visits: boolean;
 
