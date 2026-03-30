@@ -237,7 +237,7 @@ export default function StudyEditor() {
             <div className="py-3">
               <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Sections</p>
               {CONSENT_SECTIONS.map((section) => {
-                const count = assembled.filter((c) => c.section_name === section).length;
+                const count = assembled.filter((c) => c.section === section).length;
                 return (
                   <button
                     key={section}

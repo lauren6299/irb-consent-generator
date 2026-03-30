@@ -4,10 +4,10 @@ import { Lock, Info } from 'lucide-react';
 
 interface PreviewClause {
   id: string;
-  section_name: string;
-  clause_title: string;
+  section: string;
   clause_text: string;
-  clause_type: string;
+  content_type: string;
+  required_level: string;
   inclusion_reason: string;
 }
 
@@ -41,13 +41,12 @@ function replacePlaceholders(text: string, study: StudyInfo): string {
 
 export default function ConsentPreview({ clauses, study }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
-    acc[section] = clauses.filter((c) => c.section_name === section);
+    acc[section] = clauses.filter((c) => c.section === section);
     return acc;
   }, {} as Record<string, PreviewClause[]>);
 
   return (
     <div className="space-y-6">
-      {/* Document header */}
       <div className="text-center space-y-1 pb-4 border-b">
         <p className="text-xs font-semibold tracking-widest text-primary uppercase">Stanford University</p>
         <h2 className="font-heading text-xl font-bold">Research Consent Form</h2>
@@ -71,20 +70,20 @@ export default function ConsentPreview({ clauses, study }: Props) {
                 <div
                   key={clause.id}
                   className={
-                    clause.clause_type === 'required'
+                    clause.content_type === 'locked'
                       ? 'clause-required'
-                      : clause.clause_type === 'conditional'
+                      : clause.required_level === 'conditional'
                       ? 'clause-conditional'
                       : 'clause-optional'
                   }
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    {clause.clause_type === 'required' && (
+                    {clause.content_type === 'locked' && (
                       <Badge variant="outline" className="text-xs gap-1 border-primary/30 text-primary">
                         <Lock className="h-3 w-3" /> Required template language
                       </Badge>
                     )}
-                    {clause.clause_type === 'conditional' && (
+                    {clause.required_level === 'conditional' && clause.content_type !== 'locked' && (
                       <Badge variant="outline" className="text-xs gap-1 border-info/30 text-info">
                         <Info className="h-3 w-3" /> {clause.inclusion_reason}
                       </Badge>

@@ -2,13 +2,16 @@ import { StudyAnswers } from './types';
 
 interface Clause {
   id: string;
-  section_name: string;
-  subsection_name: string | null;
-  clause_title: string;
+  clause_key: string;
+  section: string;
+  subsection: string;
   clause_text: string;
-  clause_type: string;
-  trigger_json: Record<string, unknown> | null;
-  exclusion_group: string | null;
+  content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack';
+  required_level: 'required' | 'conditional';
+  trigger_expression: Record<string, unknown> | null;
+  must_include: boolean;
+  mutually_exclusive_group: string | null;
+  editable_fields: unknown[] | null;
   sort_order: number;
   active: boolean;
 }
@@ -21,18 +24,15 @@ export function evaluateClause(
   clause: Clause,
   answers: StudyAnswers
 ): { included: boolean; reason: string } {
-  if (clause.clause_type === 'required') {
+  if (clause.required_level === 'required' || clause.must_include) {
     return { included: true, reason: 'Required template language' };
   }
 
-  if (!clause.trigger_json || Object.keys(clause.trigger_json).length === 0) {
-    if (clause.clause_type === 'optional') {
-      return { included: false, reason: '' };
-    }
-    return { included: true, reason: 'Required template language' };
+  if (!clause.trigger_expression || Object.keys(clause.trigger_expression).length === 0) {
+    return { included: false, reason: '' };
   }
 
-  const triggers = clause.trigger_json as Record<string, unknown>;
+  const triggers = clause.trigger_expression as Record<string, unknown>;
 
   // Evaluate conditions: all must match (AND logic)
   for (const [key, expectedValue] of Object.entries(triggers)) {
@@ -47,14 +47,12 @@ export function evaluateClause(
         return { included: false, reason: '' };
       }
     } else if (Array.isArray(expectedValue)) {
-      // Any of the values match
       if (!expectedValue.includes(actualValue as string)) {
         return { included: false, reason: '' };
       }
     }
   }
 
-  // Build human-readable reason
   const reasons = Object.entries(triggers).map(([key, val]) => {
     const label = key.replace(/_/g, ' ');
     return `${label} = ${val}`;
@@ -74,12 +72,10 @@ export function assembleConsentForm(
   const included: IncludedClause[] = [];
   const usedExclusionGroups = new Set<string>();
 
-  // Sort by sort_order
   const sorted = [...activeClauses].sort((a, b) => a.sort_order - b.sort_order);
 
   for (const clause of sorted) {
-    // Check exclusion groups
-    if (clause.exclusion_group && usedExclusionGroups.has(clause.exclusion_group)) {
+    if (clause.mutually_exclusive_group && usedExclusionGroups.has(clause.mutually_exclusive_group)) {
       continue;
     }
 
@@ -87,8 +83,8 @@ export function assembleConsentForm(
 
     if (shouldInclude) {
       included.push({ ...clause, inclusion_reason: reason });
-      if (clause.exclusion_group) {
-        usedExclusionGroups.add(clause.exclusion_group);
+      if (clause.mutually_exclusive_group) {
+        usedExclusionGroups.add(clause.mutually_exclusive_group);
       }
     }
   }
