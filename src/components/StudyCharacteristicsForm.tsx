@@ -48,6 +48,12 @@ function ToggleRow({ items, answers, onChange }: { items: [keyof StudyAnswers, s
 export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
   const set = (key: keyof StudyAnswers, value: string) => onChange({ ...answers, [key]: value });
 
+  const toggleVisit = (key: 'has_single_visit' | 'has_multiple_required_visits' | 'has_optional_followup_visits') => {
+    const updated = { ...answers, [key]: !answers[key] };
+    updated.has_study_visits = updated.has_single_visit || updated.has_multiple_required_visits || updated.has_optional_followup_visits;
+    onChange(updated);
+  };
+
   return (
     <div className="space-y-6">
       <h3 className="font-heading text-lg font-semibold">Study Characteristics</h3>
