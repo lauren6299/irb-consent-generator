@@ -36,7 +36,7 @@ export function evaluateClause(
 
   // Evaluate conditions: all must match (AND logic)
   for (const [key, expectedValue] of Object.entries(triggers)) {
-    const actualValue = (answers as Record<string, unknown>)[key];
+    const actualValue = (answers as unknown as Record<string, unknown>)[key];
 
     if (typeof expectedValue === 'boolean') {
       if (actualValue !== expectedValue) {
