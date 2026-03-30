@@ -120,6 +120,8 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   has_optional_followup_visits: false,
   interventional_study: false,
   has_study_visits: false,
+  required_visit_schedule_text: '',
+  optional_followup_text: '',
   specimens: '',
   collects_specimens: false,
   specimens_unlinked: false,
