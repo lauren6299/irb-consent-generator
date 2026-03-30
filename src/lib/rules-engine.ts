@@ -1,3 +1,4 @@
+import { supabase } from '@/integrations/supabase/client';
 import { StudyAnswers } from './types';
 
 interface Clause {
@@ -6,8 +7,8 @@ interface Clause {
   section: string;
   subsection: string;
   clause_text: string;
-  content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack';
-  required_level: 'required' | 'conditional';
+  content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack' | 'structured_block';
+  required_level: 'required' | 'conditional' | 'optional';
   trigger_expression: Record<string, unknown> | null;
   must_include: boolean;
   mutually_exclusive_group: string | null;
@@ -16,15 +17,46 @@ interface Clause {
   active: boolean;
 }
 
-interface IncludedClause extends Clause {
+export interface AssembledClause {
+  section: string;
+  subsection: string;
+  clause_key: string;
+  clause_text: string;
+  content_type: string;
+  editable_fields: unknown[] | null;
   inclusion_reason: string;
+}
+
+// Also re-export the legacy shape for existing components
+export interface IncludedClause extends Clause {
+  inclusion_reason: string;
+}
+
+function matchesTrigger(
+  triggers: Record<string, unknown>,
+  answers: Record<string, unknown>
+): boolean {
+  for (const [key, expectedValue] of Object.entries(triggers)) {
+    const actualValue = answers[key];
+
+    if (typeof expectedValue === 'boolean') {
+      if (actualValue !== expectedValue) return false;
+    } else if (typeof expectedValue === 'string') {
+      if (actualValue !== expectedValue) return false;
+    } else if (Array.isArray(expectedValue)) {
+      if (!expectedValue.includes(actualValue as string)) return false;
+    } else {
+      return false;
+    }
+  }
+  return true;
 }
 
 export function evaluateClause(
   clause: Clause,
-  answers: StudyAnswers
+  answers: Record<string, unknown>
 ): { included: boolean; reason: string } {
-  if (clause.required_level === 'required' || clause.must_include) {
+  if (clause.must_include || clause.required_level === 'required') {
     return { included: true, reason: 'Required template language' };
   }
 
@@ -32,64 +64,111 @@ export function evaluateClause(
     return { included: false, reason: '' };
   }
 
-  const triggers = clause.trigger_expression as Record<string, unknown>;
-
-  // Evaluate conditions: all must match (AND logic)
-  for (const [key, expectedValue] of Object.entries(triggers)) {
-    const actualValue = (answers as unknown as Record<string, unknown>)[key];
-
-    if (typeof expectedValue === 'boolean') {
-      if (actualValue !== expectedValue) {
-        return { included: false, reason: '' };
-      }
-    } else if (typeof expectedValue === 'string') {
-      if (actualValue !== expectedValue) {
-        return { included: false, reason: '' };
-      }
-    } else if (Array.isArray(expectedValue)) {
-      if (!expectedValue.includes(actualValue as string)) {
-        return { included: false, reason: '' };
-      }
-    }
-  }
-
-  const reasons = Object.entries(triggers).map(([key, val]) => {
-    const label = key.replace(/_/g, ' ');
-    return `${label} = ${val}`;
-  });
+  const included = matchesTrigger(
+    clause.trigger_expression as Record<string, unknown>,
+    answers
+  );
 
   return {
-    included: true,
-    reason: `Included because: ${reasons.join(', ')}`,
+    included,
+    reason: included ? 'Included based on study selections' : '',
   };
 }
 
+/**
+ * assembleConsent – fetches clauses + study_answers from DB, runs the engine,
+ * and returns structured JSON.
+ */
+export async function assembleConsent(studyId: string): Promise<AssembledClause[]> {
+  // 1 & 2 – fetch active clauses and study answers in parallel
+  const [clausesRes, answersRes] = await Promise.all([
+    supabase.from('clauses').select('*').eq('active', true).order('sort_order'),
+    supabase.from('study_answers').select('answer_data').eq('study_id', studyId).single(),
+  ]);
+
+  const clauses: Clause[] = (clausesRes.data ?? []) as unknown as Clause[];
+  const answers: Record<string, unknown> = (answersRes.data?.answer_data as Record<string, unknown>) ?? {};
+
+  return assembleFromData(clauses, answers);
+}
+
+/**
+ * In-memory assembly – used by both `assembleConsent` and existing UI code
+ * that already holds clauses + answers in state.
+ */
 export function assembleConsentForm(
   clauses: Clause[],
   answers: StudyAnswers
 ): IncludedClause[] {
-  const activeClauses = clauses.filter((c) => c.active);
-  const included: IncludedClause[] = [];
-  const usedExclusionGroups = new Set<string>();
+  const answersMap = answers as unknown as Record<string, unknown>;
+  const result = runAssembly(clauses, answersMap);
+  return result.map((r) => ({
+    ...(r._clause as Clause),
+    inclusion_reason: r.inclusion_reason,
+  }));
+}
 
-  const sorted = [...activeClauses].sort((a, b) => a.sort_order - b.sort_order);
+// Shared core assembly logic
+interface AssemblyResult {
+  _clause: Clause;
+  section: string;
+  subsection: string;
+  clause_key: string;
+  clause_text: string;
+  content_type: string;
+  editable_fields: unknown[] | null;
+  inclusion_reason: string;
+}
+
+function runAssembly(
+  clauses: Clause[],
+  answers: Record<string, unknown>
+): AssemblyResult[] {
+  const active = clauses.filter((c) => c.active);
+
+  // 6 – order by section, subsection, sort_order
+  const sorted = [...active].sort((a, b) => {
+    if (a.section !== b.section) return a.section.localeCompare(b.section);
+    if (a.subsection !== b.subsection) return a.subsection.localeCompare(b.subsection);
+    return a.sort_order - b.sort_order;
+  });
+
+  const included: AssemblyResult[] = [];
+  const usedGroups = new Set<string>();
 
   for (const clause of sorted) {
-    if (clause.mutually_exclusive_group && usedExclusionGroups.has(clause.mutually_exclusive_group)) {
+    // 5 – mutual exclusion
+    if (clause.mutually_exclusive_group && usedGroups.has(clause.mutually_exclusive_group)) {
       continue;
     }
 
     const { included: shouldInclude, reason } = evaluateClause(clause, answers);
 
     if (shouldInclude) {
-      included.push({ ...clause, inclusion_reason: reason });
+      included.push({
+        _clause: clause,
+        section: clause.section,
+        subsection: clause.subsection,
+        clause_key: clause.clause_key,
+        clause_text: clause.clause_text,
+        content_type: clause.content_type,
+        editable_fields: clause.editable_fields,
+        inclusion_reason: reason,
+      });
       if (clause.mutually_exclusive_group) {
-        usedExclusionGroups.add(clause.mutually_exclusive_group);
+        usedGroups.add(clause.mutually_exclusive_group);
       }
     }
   }
 
   return included;
+}
+
+function assembleFromData(
+  clauses: Clause[],
+  answers: Record<string, unknown>
+): AssembledClause[] {
+  return runAssembly(clauses, answers).map(({ _clause, ...rest }) => rest);
 }
 
 export function getMissingRequiredFields(answers: StudyAnswers): string[] {
