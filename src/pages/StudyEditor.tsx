@@ -1,19 +1,18 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import StudySetupForm from '@/components/StudySetupForm';
 import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
-import ConsentPreview from '@/components/ConsentPreview';
+import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
 import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
 import { generateConsentDocx } from '@/lib/docx-export';
-import { ArrowLeft, Save, Download, AlertTriangle, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
 
 interface StudyInfo {
   title: string;
@@ -49,6 +48,7 @@ export default function StudyEditor() {
   const [studyId, setStudyId] = useState<string | null>(isNew ? null : id ?? null);
   const [study, setStudy] = useState<StudyInfo>(DEFAULT_STUDY_INFO);
   const [answers, setAnswers] = useState<StudyAnswers>(DEFAULT_STUDY_ANSWERS);
+  const [clauseEdits, setClauseEdits] = useState<ClauseEdits>({});
   const [clauses, setClauses] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>('setup');
   const [saving, setSaving] = useState(false);
@@ -80,13 +80,23 @@ export default function StudyEditor() {
     });
     supabase.from('study_answers').select('*').eq('study_id', studyId).single().then(({ data }) => {
       if (data?.answer_data) {
-        setAnswers({ ...DEFAULT_STUDY_ANSWERS, ...(data.answer_data as object) } as StudyAnswers);
+        const stored = data.answer_data as Record<string, unknown>;
+        // Separate clause_edits from answers
+        if (stored.clause_edits && typeof stored.clause_edits === 'object') {
+          setClauseEdits(stored.clause_edits as ClauseEdits);
+        }
+        const { clause_edits: _, ...rest } = stored;
+        setAnswers({ ...DEFAULT_STUDY_ANSWERS, ...rest } as StudyAnswers);
       }
     });
   }, [studyId, isNew]);
 
   const assembled = useMemo(() => assembleConsentForm(clauses, answers), [clauses, answers]);
   const missingFields = useMemo(() => getMissingRequiredFields(answers), [answers]);
+
+  const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
+    setClauseEdits(newEdits);
+  }, []);
 
   async function handleSave() {
     if (!user || !study.title.trim()) {
@@ -95,6 +105,9 @@ export default function StudyEditor() {
     }
     setSaving(true);
     try {
+      // Merge clause_edits into answer_data for persistence
+      const answerPayload = { ...answers, clause_edits: clauseEdits } as any;
+
       if (studyId) {
         await supabase.from('studies').update({
           title: study.title,
@@ -109,7 +122,7 @@ export default function StudyEditor() {
 
         await supabase.from('study_answers').upsert({
           study_id: studyId,
-          answer_data: answers as any,
+          answer_data: answerPayload,
         }, { onConflict: 'study_id' });
       } else {
         const { data: newStudy } = await supabase.from('studies').insert({
@@ -128,7 +141,7 @@ export default function StudyEditor() {
           setStudyId(newStudy.id);
           await supabase.from('study_answers').insert({
             study_id: newStudy.id,
-            answer_data: answers as any,
+            answer_data: answerPayload,
           });
           navigate(`/study/${newStudy.id}`, { replace: true });
         }
@@ -151,7 +164,6 @@ export default function StudyEditor() {
     }
     try {
       const { fileName } = await generateConsentDocx(study, assembled);
-      // Save record
       if (studyId) {
         await supabase.from('generated_documents').insert({
           study_id: studyId,
@@ -199,7 +211,6 @@ export default function StudyEditor() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left panel */}
         <div className="w-[420px] border-r flex flex-col shrink-0">
-          {/* Tab switcher */}
           <div className="flex border-b">
             <button
               className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
@@ -266,7 +277,12 @@ export default function StudyEditor() {
         <div className="flex-1 overflow-hidden">
           <ScrollArea className="h-full">
             <div className="max-w-2xl mx-auto p-6">
-              <ConsentPreview clauses={assembled} study={study} />
+              <ConsentPreview
+                clauses={assembled}
+                study={study}
+                edits={clauseEdits}
+                onEditChange={handleClauseEdits}
+              />
             </div>
           </ScrollArea>
         </div>
