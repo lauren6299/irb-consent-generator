@@ -130,12 +130,17 @@ function runAssembly(
 ): AssemblyResult[] {
   const active = clauses.filter((c) => c.active);
 
-  // Sort by canonical section order, then subsection, then sort_order
+  // Sort by canonical section order → anchor order → subsection_order → sort_order
   const sorted = [...active].sort((a, b) => {
-    const aOrder = SECTION_ORDER[a.section] ?? 999;
-    const bOrder = SECTION_ORDER[b.section] ?? 999;
-    if (aOrder !== bOrder) return aOrder - bOrder;
-    if (a.subsection !== b.subsection) return a.subsection.localeCompare(b.subsection);
+    const secA = SECTION_ORDER[a.section] ?? 999;
+    const secB = SECTION_ORDER[b.section] ?? 999;
+    if (secA !== secB) return secA - secB;
+    const ancA = ANCHOR_ORDER[a.insertion_anchor ?? ''] ?? 999;
+    const ancB = ANCHOR_ORDER[b.insertion_anchor ?? ''] ?? 999;
+    if (ancA !== ancB) return ancA - ancB;
+    const subA = a.subsection_order ?? 999;
+    const subB = b.subsection_order ?? 999;
+    if (subA !== subB) return subA - subB;
     return a.sort_order - b.sort_order;
   });
 
