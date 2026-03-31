@@ -14,6 +14,7 @@ interface PreviewClause {
   content_type: string;
   required_level?: string;
   editable_fields?: unknown[] | null;
+  insertion_anchor?: string | null;
   inclusion_reason: string;
 }
 
