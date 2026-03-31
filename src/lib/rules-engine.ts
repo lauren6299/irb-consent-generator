@@ -120,6 +120,7 @@ interface AssemblyResult {
   clause_text: string;
   content_type: string;
   editable_fields: unknown[] | null;
+  insertion_anchor: string | null;
   inclusion_reason: string;
 }
 
