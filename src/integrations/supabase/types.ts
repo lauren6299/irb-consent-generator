@@ -23,12 +23,14 @@ export type Database = {
           created_at: string
           editable_fields: Json | null
           id: string
+          insertion_anchor: string | null
           must_include: boolean
           mutually_exclusive_group: string | null
           required_level: Database["public"]["Enums"]["clause_required_level"]
           section: string
           sort_order: number
           subsection: string
+          subsection_order: number | null
           template_version: string
           trigger_expression: Json | null
           updated_at: string
@@ -41,12 +43,14 @@ export type Database = {
           created_at?: string
           editable_fields?: Json | null
           id?: string
+          insertion_anchor?: string | null
           must_include?: boolean
           mutually_exclusive_group?: string | null
           required_level?: Database["public"]["Enums"]["clause_required_level"]
           section?: string
           sort_order?: number
           subsection?: string
+          subsection_order?: number | null
           template_version: string
           trigger_expression?: Json | null
           updated_at?: string
@@ -59,12 +63,14 @@ export type Database = {
           created_at?: string
           editable_fields?: Json | null
           id?: string
+          insertion_anchor?: string | null
           must_include?: boolean
           mutually_exclusive_group?: string | null
           required_level?: Database["public"]["Enums"]["clause_required_level"]
           section?: string
           sort_order?: number
           subsection?: string
+          subsection_order?: number | null
           template_version?: string
           trigger_expression?: Json | null
           updated_at?: string
