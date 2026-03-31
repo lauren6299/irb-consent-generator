@@ -164,6 +164,7 @@ function runAssembly(
         clause_text: clause.clause_text,
         content_type: clause.content_type,
         editable_fields: clause.editable_fields,
+        insertion_anchor: clause.insertion_anchor,
         inclusion_reason: reason,
       });
       if (clause.mutually_exclusive_group) {
