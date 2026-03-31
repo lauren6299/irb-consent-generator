@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { StudyAnswers, SECTION_ORDER } from './types';
+import { StudyAnswers, SECTION_ORDER, ANCHOR_ORDER } from './types';
 
 interface Clause {
   id: string;
