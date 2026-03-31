@@ -179,26 +179,53 @@ export const SECTION_ORDER: Record<string, number> = {
   voluntary_participation: 4,
   duration: 5,
   procedures: 6,
-  future_use: 7,
-  genetics: 8,
+  participant_responsibilities: 7,
+  withdrawal: 8,
+  risks: 9,
+  benefits: 10,
+  alternatives: 11,
+  participants_rights: 12,
+  confidentiality: 13,
+  hipaa: 14,
+  financial: 15,
+  contacts: 16,
+  future_contact: 17,
+  bill_of_rights: 18,
+  signatures: 19,
+};
+
+/**
+ * Insertion anchor ordering within each section.
+ * Anchors not listed here sort to 999.
+ */
+export const ANCHOR_ORDER: Record<string, number> = {
+  // procedures
+  procedures_main: 1,
+  future_use_of_information_and_specimens: 2,
+  genetic_testing_and_future_research: 3,
+  return_of_results: 4,
+  mri: 5,
+  people_of_childbearing_potential: 6,
+  reportable_communicable_diseases: 7,
+  gene_transfer: 8,
   genetic_information_sharing: 9,
-  mri: 10,
-  pregnancy: 11,
-  communicable_disease: 12,
-  gene_transfer: 13,
-  participant_responsibilities: 14,
-  withdrawal: 15,
-  risks: 16,
-  benefits: 17,
-  alternatives: 18,
-  participants_rights: 19,
-  confidentiality: 20,
-  hipaa: 21,
-  financial: 22,
-  contacts: 23,
-  future_contact: 24,
-  bill_of_rights: 25,
-  signatures: 26,
+  // participant_responsibilities
+  responsibilities_main: 1,
+  // withdrawal
+  withdrawal_main: 1,
+  investigator_withdrawal: 2,
+  fda_withdrawal: 3,
+  // confidentiality
+  confidentiality_main: 1,
+  clinicaltrials_gov: 2,
+  fda_confidentiality: 3,
+  certificate_of_confidentiality: 4,
+  // financial
+  payment: 1,
+  reimbursement: 2,
+  sponsor: 3,
+  conflict_disclosure: 4,
+  injury_compensation: 5,
 };
 
 /** Sections in canonical document order. Derived from SECTION_ORDER. */
