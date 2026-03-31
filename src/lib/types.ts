@@ -167,33 +167,43 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   use_no_participation_alternative: false,
 };
 
-export const CONSENT_SECTIONS = [
-  'header',
-  'summary',
-  'purpose',
-  'voluntary_participation',
-  'duration',
-  'procedures',
-  'future_use',
-  'genetics',
-  'mri',
-  'pregnancy',
-  'communicable_disease',
-  'gene_transfer',
-  'genetic_information_sharing',
-  'participant_responsibilities',
-  'withdrawal',
-  'risks',
-  'benefits',
-  'alternatives',
-  'participants_rights',
-  'confidentiality',
-  'hipaa',
-  'financial',
-  'contacts',
-  'future_contact',
-  'bill_of_rights',
-  'signatures',
-] as const;
+/**
+ * Canonical Stanford IRB section ordering.
+ * Every section in the clauses table must appear here.
+ * Lower number = earlier in the document.
+ */
+export const SECTION_ORDER: Record<string, number> = {
+  header: 1,
+  summary: 2,
+  purpose: 3,
+  voluntary_participation: 4,
+  duration: 5,
+  procedures: 6,
+  future_use: 7,
+  genetics: 8,
+  genetic_information_sharing: 9,
+  mri: 10,
+  pregnancy: 11,
+  communicable_disease: 12,
+  gene_transfer: 13,
+  participant_responsibilities: 14,
+  withdrawal: 15,
+  risks: 16,
+  benefits: 17,
+  alternatives: 18,
+  participants_rights: 19,
+  confidentiality: 20,
+  hipaa: 21,
+  financial: 22,
+  contacts: 23,
+  future_contact: 24,
+  bill_of_rights: 25,
+  signatures: 26,
+};
 
-export type ConsentSection = typeof CONSENT_SECTIONS[number];
+/** Sections in canonical document order. Derived from SECTION_ORDER. */
+export const CONSENT_SECTIONS = Object.keys(SECTION_ORDER).sort(
+  (a, b) => SECTION_ORDER[a] - SECTION_ORDER[b]
+) as unknown as readonly string[];
+
+export type ConsentSection = keyof typeof SECTION_ORDER;

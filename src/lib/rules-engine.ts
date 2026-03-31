@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { StudyAnswers } from './types';
+import { StudyAnswers, SECTION_ORDER } from './types';
 
 interface Clause {
   id: string;
@@ -126,9 +126,11 @@ function runAssembly(
 ): AssemblyResult[] {
   const active = clauses.filter((c) => c.active);
 
-  // 6 – order by section, subsection, sort_order
+  // Sort by canonical section order, then subsection, then sort_order
   const sorted = [...active].sort((a, b) => {
-    if (a.section !== b.section) return a.section.localeCompare(b.section);
+    const aOrder = SECTION_ORDER[a.section] ?? 999;
+    const bOrder = SECTION_ORDER[b.section] ?? 999;
+    if (aOrder !== bOrder) return aOrder - bOrder;
     if (a.subsection !== b.subsection) return a.subsection.localeCompare(b.subsection);
     return a.sort_order - b.sort_order;
   });
