@@ -14,6 +14,8 @@ interface Clause {
   mutually_exclusive_group: string | null;
   editable_fields: unknown[] | null;
   sort_order: number;
+  subsection_order: number | null;
+  insertion_anchor: string | null;
   active: boolean;
 }
 
