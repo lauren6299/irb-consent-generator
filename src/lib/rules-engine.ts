@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { StudyAnswers, SECTION_ORDER } from './types';
+import { StudyAnswers, SECTION_ORDER, ANCHOR_ORDER } from './types';
 
 interface Clause {
   id: string;
@@ -14,6 +14,8 @@ interface Clause {
   mutually_exclusive_group: string | null;
   editable_fields: unknown[] | null;
   sort_order: number;
+  subsection_order: number | null;
+  insertion_anchor: string | null;
   active: boolean;
 }
 
@@ -24,6 +26,7 @@ export interface AssembledClause {
   clause_text: string;
   content_type: string;
   editable_fields: unknown[] | null;
+  insertion_anchor: string | null;
   inclusion_reason: string;
 }
 
@@ -117,6 +120,7 @@ interface AssemblyResult {
   clause_text: string;
   content_type: string;
   editable_fields: unknown[] | null;
+  insertion_anchor: string | null;
   inclusion_reason: string;
 }
 
@@ -126,12 +130,17 @@ function runAssembly(
 ): AssemblyResult[] {
   const active = clauses.filter((c) => c.active);
 
-  // Sort by canonical section order, then subsection, then sort_order
+  // Sort by canonical section order → anchor order → subsection_order → sort_order
   const sorted = [...active].sort((a, b) => {
-    const aOrder = SECTION_ORDER[a.section] ?? 999;
-    const bOrder = SECTION_ORDER[b.section] ?? 999;
-    if (aOrder !== bOrder) return aOrder - bOrder;
-    if (a.subsection !== b.subsection) return a.subsection.localeCompare(b.subsection);
+    const secA = SECTION_ORDER[a.section] ?? 999;
+    const secB = SECTION_ORDER[b.section] ?? 999;
+    if (secA !== secB) return secA - secB;
+    const ancA = ANCHOR_ORDER[a.insertion_anchor ?? ''] ?? 999;
+    const ancB = ANCHOR_ORDER[b.insertion_anchor ?? ''] ?? 999;
+    if (ancA !== ancB) return ancA - ancB;
+    const subA = a.subsection_order ?? 999;
+    const subB = b.subsection_order ?? 999;
+    if (subA !== subB) return subA - subB;
     return a.sort_order - b.sort_order;
   });
 
@@ -155,6 +164,7 @@ function runAssembly(
         clause_text: clause.clause_text,
         content_type: clause.content_type,
         editable_fields: clause.editable_fields,
+        insertion_anchor: clause.insertion_anchor,
         inclusion_reason: reason,
       });
       if (clause.mutually_exclusive_group) {
