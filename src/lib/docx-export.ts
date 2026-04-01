@@ -428,17 +428,7 @@ export async function generateConsentDocx(
         headers: {
           default: new Header({
             children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `${study.short_title || study.title}`,
-                    size: 16,
-                    font: HEADING_FONT,
-                    color: '888888',
-                  }),
-                ],
-                alignment: AlignmentType.RIGHT,
-              }),
+              buildStanfordHeader(study),
             ],
           }),
         },
