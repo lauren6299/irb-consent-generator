@@ -540,13 +540,38 @@ export async function generateConsentDocx(
       const text = resolveClauseText(clause, study, clauseEdits);
       // Detect signature-style clauses by key patterns
       if (clause.clause_key.includes('signature') || clause.clause_key.includes('consent_block')) {
-        // Render as a signature block
-        const label = text.split('\n')[0] || 'Signature';
-        children.push(...signatureBlock(label));
-        // Render remaining lines as body text
-        const remaining = text.split('\n').slice(1).filter(Boolean);
-        for (const line of remaining) {
-          children.push(bodyParagraph(line, { size: META_LABEL_SIZE }));
+        // Parse the text for slash-separated labels (e.g. "Signature of Adult Participant / Date / Print Name...")
+        // and render as proper signature blocks instead
+        const lines = text.split('\n').filter(Boolean);
+        for (const line of lines) {
+          // Check if this line contains slash-separated signature labels
+          const parts = line.split('/').map((p) => p.trim());
+          if (parts.length >= 2 && parts.some((p) => p.toLowerCase().includes('signature'))) {
+            // Extract the role labels
+            const signatureLabel = parts.find((p) => p.toLowerCase().includes('signature')) || parts[0];
+            const printNameLabel = parts.find((p) => p.toLowerCase().includes('print name')) || `Print Name`;
+            const larAuthority = parts.find((p) => p.toLowerCase().includes('authority'));
+            children.push(...signatureBlock(signatureLabel));
+            // Override the print name line with the actual label from the clause
+            children.pop(); // remove the default "Print Name: ___" line
+            children.push(new Paragraph({
+              children: [
+                new TextRun({ text: `${printNameLabel}: ________________________________________`, font: BODY_FONT, size: META_LABEL_SIZE }),
+              ],
+              spacing: { after: 200 },
+            }));
+            if (larAuthority) {
+              children.push(new Paragraph({
+                children: [
+                  new TextRun({ text: `${larAuthority}: ______________________________`, font: BODY_FONT, size: META_LABEL_SIZE }),
+                ],
+                spacing: { after: 200 },
+              }));
+            }
+          } else {
+            // Regular text line (attestation, etc.)
+            children.push(bodyParagraph(line));
+          }
         }
       } else {
         // Attestation or other text — render as body
