@@ -145,6 +145,8 @@ export default function AdminClauses() {
       section: source.section,
       subsection: source.subsection,
       clause_text: source.clause_text,
+      child_only_text: source.child_only_text,
+      mixed_population_text: source.mixed_population_text,
       content_type: source.content_type,
       required_level: source.required_level,
       trigger_expression: source.trigger_expression,
