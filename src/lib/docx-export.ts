@@ -582,9 +582,11 @@ export async function generateConsentDocx(
 
   // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
   const _popAdults = !!(answers?.population_adults);
+  const _popChildren = !!(answers?.population_children);
   const _inclChildren = !!(answers?.includes_children);
   const needsAdultChildBox = _popAdults && _inclChildren;
-  console.log('[AdultChildBox] population_adults =', _popAdults, '| includes_children =', _inclChildren, '| show_box =', needsAdultChildBox);
+  const docMode = (_popChildren && !_popAdults) ? 'child_only' : 'default';
+  console.log('[DocxExport] document_subject_mode =', docMode, '| population_adults =', _popAdults, '| population_children =', _popChildren, '| includes_children =', _inclChildren, '| show_box =', needsAdultChildBox);
   if (needsAdultChildBox) {
     children.push(...buildAdultChildParticipationBox());
   }
