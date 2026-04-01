@@ -100,7 +100,8 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
   if (!fields || !Array.isArray(fields)) return [];
   return fields.filter(
     (f): f is EditableField =>
-      typeof f === 'object' && f !== null && 'field_key' in (f as Record<string, unknown>)
+      typeof f === 'object' && f !== null && 'field_key' in (f as Record<string, unknown>) &&
+      !GLOBAL_BOUND_FIELDS.has((f as EditableField).field_key)
   );
 }
 
