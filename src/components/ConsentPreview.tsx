@@ -53,6 +53,7 @@ interface Props {
   edits?: ClauseEdits;
   onEditChange?: (edits: ClauseEdits) => void;
   showAdultChildBox?: boolean;
+  includeSummary?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
