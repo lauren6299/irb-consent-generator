@@ -712,6 +712,15 @@ export async function generateConsentDocx(
   for (const clause of bodyClauses) {
     // Section heading
     if (clause.section !== currentSection) {
+      // Before leaving the purpose section, inject enrollment text
+      if (currentSection === 'purpose' && answers?.purpose_enrollment_text) {
+        const enrollText = answers.purpose_enrollment_text as string;
+        if (enrollText.trim()) {
+          for (const line of enrollText.split('\n').filter(Boolean)) {
+            children.push(bodyParagraph(line));
+          }
+        }
+      }
       currentSection = clause.section;
       currentAnchor = '';
       const heading = SECTION_HEADING_MAP[currentSection];
@@ -740,6 +749,16 @@ export async function generateConsentDocx(
         continue;
       }
       children.push(bodyParagraph(line));
+    }
+  }
+
+  // If purpose was the last section processed, still inject enrollment text
+  if (currentSection === 'purpose' && answers?.purpose_enrollment_text) {
+    const enrollText = answers.purpose_enrollment_text as string;
+    if (enrollText.trim()) {
+      for (const line of enrollText.split('\n').filter(Boolean)) {
+        children.push(bodyParagraph(line));
+      }
     }
   }
 
