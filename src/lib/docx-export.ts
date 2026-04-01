@@ -604,6 +604,14 @@ export async function generateConsentDocx(
     throw new Error('Protocol Title and Protocol Director are required for the Stanford repeating header');
   }
 
+  // --- Validate Participant ID is not an SSN ---
+  if (answers?.site_requires_participant_id_on_each_page && answers.participant_id_value) {
+    const stripped = (answers.participant_id_value as string).replace(/[\s-]/g, '');
+    if (/^\d{9}$/.test(stripped) && /^\d{3}-?\d{2}-?\d{4}$/.test((answers.participant_id_value as string).replace(/\s/g, ''))) {
+      throw new Error('Participant ID must not use a social security number');
+    }
+  }
+
   // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
   const disallowedTokens = findUnresolvedPlaceholders(clauses, study, clauseEdits);
   if (disallowedTokens.length > 0) {
