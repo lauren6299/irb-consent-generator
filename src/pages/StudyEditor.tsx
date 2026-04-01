@@ -11,7 +11,7 @@ import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
 import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
 import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
-import { generateConsentDocx, findUnresolvedPlaceholders } from '@/lib/docx-export';
+import { generateConsentDocx } from '@/lib/docx-export';
 import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
 
 interface StudyInfo {
@@ -165,16 +165,8 @@ export default function StudyEditor() {
       return;
     }
 
-    // Check for unresolved placeholders
-    const unresolved = findUnresolvedPlaceholders(assembled, study, clauseEdits);
-    if (unresolved.length > 0) {
-      toast({
-        variant: 'destructive',
-        title: 'Unresolved Placeholders',
-        description: `The following fields must be filled before export: ${unresolved.join(', ')}`,
-      });
-      return;
-    }
+    // Note: editable prompts like [study_topic] are allowed to remain in the exported .docx.
+    // The export function itself validates that no disallowed internal tokens remain.
 
     try {
       const { fileName } = await generateConsentDocx(study, assembled, clauseEdits);

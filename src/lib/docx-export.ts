@@ -112,6 +112,36 @@ const HEADER_ONLY_CLAUSE_KEYS = new Set([
 const SIGNATURE_SECTION = 'signatures';
 
 // ---------------------------------------------------------------------------
+// Approved editable prompts – allowed to remain in exported .docx
+// ---------------------------------------------------------------------------
+
+const APPROVED_EDITABLE_PROMPTS = new Set([
+  '[study_topic]',
+  '[study_goal]',
+  '[selection_rationale]',
+  '[target_population]',
+  '[stanford_n]',
+  '[total_n]',
+  '[enrollment_geography]',
+  '[duration]',
+  '[active_duration]',
+  '[followup_duration]',
+  '[washout_description]',
+  '[procedure_narrative]',
+  '[withdrawal_contact_name]',
+  '[withdrawal_contact_phone]',
+  '[withdrawal_procedure_text]',
+  '[investigator_withdrawal_reasons_text]',
+  '[risk_narrative]',
+  '[benefit_narrative]',
+  '[alternatives_narrative]',
+  '[payment_amount_and_method]',
+  '[payment_schedule]',
+  '[appointment_contact_name]',
+  '[appointment_contact_phone]',
+]);
+
+// ---------------------------------------------------------------------------
 // Fonts & sizes (twips: 1pt = 2 twips)
 // ---------------------------------------------------------------------------
 
@@ -153,14 +183,15 @@ function substitutePlaceholders(
 }
 
 /**
- * Find unresolved placeholders (anything like [SOME_FIELD] still in the text).
+ * Find disallowed unresolved placeholders (tokens NOT in the approved editable list).
+ * Approved editable prompts are allowed to remain in the exported .docx.
  */
 export function findUnresolvedPlaceholders(
   clauses: ExportClause[],
   study: StudyInfo,
   clauseEdits?: ClauseEdits
 ): string[] {
-  const unresolved = new Set<string>();
+  const disallowed = new Set<string>();
   for (const clause of clauses) {
     const edits = clauseEdits?.[clause.clause_key];
     let text: string;
@@ -169,10 +200,17 @@ export function findUnresolvedPlaceholders(
     } else {
       text = substitutePlaceholders(clause.clause_text, study, edits?.fields);
     }
-    const matches = text.match(/\[[A-Z_]+\]/g);
-    if (matches) matches.forEach((m) => unresolved.add(m));
+    const matches = text.match(/\[[a-zA-Z_]+\]/g);
+    if (matches) {
+      matches.forEach((m) => {
+        const lower = m.toLowerCase();
+        if (!APPROVED_EDITABLE_PROMPTS.has(lower)) {
+          disallowed.add(m);
+        }
+      });
+    }
   }
-  return Array.from(unresolved);
+  return Array.from(disallowed);
 }
 
 // ---------------------------------------------------------------------------
@@ -403,10 +441,10 @@ export async function generateConsentDocx(
     throw new Error('Protocol Title and Protocol Director are required for the Stanford repeating header');
   }
 
-  // --- Validate placeholders ---
-  const unresolved = findUnresolvedPlaceholders(clauses, study, clauseEdits);
-  if (unresolved.length > 0) {
-    throw new Error(`Unresolved placeholders: ${unresolved.join(', ')}`);
+  // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
+  const disallowedTokens = findUnresolvedPlaceholders(clauses, study, clauseEdits);
+  if (disallowedTokens.length > 0) {
+    throw new Error(`Disallowed internal tokens found: ${disallowedTokens.join(', ')}`);
   }
 
   // --- Guardrail: detect duplicate header content leaking into body ---
@@ -486,9 +524,15 @@ export async function generateConsentDocx(
       }
     }
 
-    // Body text
+    // Body text — deduplicate Bill of Rights heading that may appear in clause text
     const text = resolveClauseText(clause, study, clauseEdits);
+    const billOfRightsHeading = "EXPERIMENTAL SUBJECT'S BILL OF RIGHTS";
+    const sectionAlreadyHasHeading = currentSection === 'bill_of_rights';
     for (const line of text.split('\n').filter(Boolean)) {
+      // Skip duplicate Bill of Rights heading inside clause text if section heading already rendered
+      if (sectionAlreadyHasHeading && line.trim().toUpperCase() === billOfRightsHeading) {
+        continue;
+      }
       children.push(bodyParagraph(line));
     }
   }
@@ -502,13 +546,38 @@ export async function generateConsentDocx(
       const text = resolveClauseText(clause, study, clauseEdits);
       // Detect signature-style clauses by key patterns
       if (clause.clause_key.includes('signature') || clause.clause_key.includes('consent_block')) {
-        // Render as a signature block
-        const label = text.split('\n')[0] || 'Signature';
-        children.push(...signatureBlock(label));
-        // Render remaining lines as body text
-        const remaining = text.split('\n').slice(1).filter(Boolean);
-        for (const line of remaining) {
-          children.push(bodyParagraph(line, { size: META_LABEL_SIZE }));
+        // Parse the text for slash-separated labels (e.g. "Signature of Adult Participant / Date / Print Name...")
+        // and render as proper signature blocks instead
+        const lines = text.split('\n').filter(Boolean);
+        for (const line of lines) {
+          // Check if this line contains slash-separated signature labels
+          const parts = line.split('/').map((p) => p.trim());
+          if (parts.length >= 2 && parts.some((p) => p.toLowerCase().includes('signature'))) {
+            // Extract the role labels
+            const signatureLabel = parts.find((p) => p.toLowerCase().includes('signature')) || parts[0];
+            const printNameLabel = parts.find((p) => p.toLowerCase().includes('print name')) || `Print Name`;
+            const larAuthority = parts.find((p) => p.toLowerCase().includes('authority'));
+            children.push(...signatureBlock(signatureLabel));
+            // Override the print name line with the actual label from the clause
+            children.pop(); // remove the default "Print Name: ___" line
+            children.push(new Paragraph({
+              children: [
+                new TextRun({ text: `${printNameLabel}: ________________________________________`, font: BODY_FONT, size: META_LABEL_SIZE }),
+              ],
+              spacing: { after: 200 },
+            }));
+            if (larAuthority) {
+              children.push(new Paragraph({
+                children: [
+                  new TextRun({ text: `${larAuthority}: ______________________________`, font: BODY_FONT, size: META_LABEL_SIZE }),
+                ],
+                spacing: { after: 200 },
+              }));
+            }
+          } else {
+            // Regular text line (attestation, etc.)
+            children.push(bodyParagraph(line));
+          }
         }
       } else {
         // Attestation or other text — render as body
