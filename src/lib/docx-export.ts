@@ -264,6 +264,11 @@ export async function generateConsentDocx(
   clauses: ExportClause[],
   clauseEdits?: ClauseEdits
 ) {
+  // --- Validate required header fields ---
+  if (!study.pi_name || !study.title) {
+    throw new Error('Protocol Title and Protocol Director are required for the Stanford repeating header');
+  }
+
   // --- Validate placeholders ---
   const unresolved = findUnresolvedPlaceholders(clauses, study, clauseEdits);
   if (unresolved.length > 0) {
