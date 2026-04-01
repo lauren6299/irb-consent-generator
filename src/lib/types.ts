@@ -98,6 +98,9 @@ export interface StudyAnswers {
   include_appointment_contact: boolean;
   future_contact_permission_requested: boolean;
 
+  // Concise Summary
+  include_summary: boolean;
+
   // Optional Inclusion Controls
   include_failure_follow_instructions_reason: boolean;
   include_unanticipated_circumstances_reason: boolean;
@@ -194,6 +197,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   keep_blank_box_for_label_cover: false,
   include_appointment_contact: false,
   future_contact_permission_requested: false,
+  include_summary: true,
   include_failure_follow_instructions_reason: false,
   include_unanticipated_circumstances_reason: false,
   use_no_participation_alternative: false,

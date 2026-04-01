@@ -17,6 +17,7 @@ import {
   WidthType,
   VerticalAlign,
   ShadingType,
+  LevelFormat,
 } from 'docx';
 import { saveAs } from 'file-saver';
 import type { ClauseEdits } from '@/components/ConsentPreview';
@@ -617,7 +618,11 @@ export async function generateConsentDocx(
     }
   }
 
-  // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
+  // --- Validate Concise Summary for federally supported studies ---
+  const effectiveIncludeSummary = answers?.federally_supported ? true : (answers?.include_summary ?? true);
+  if (answers?.federally_supported && answers?.include_summary === false) {
+    throw new Error('Concise Summary is required for federally supported studies');
+  }
   const disallowedTokens = findUnresolvedPlaceholders(clauses, study, clauseEdits);
   if (disallowedTokens.length > 0) {
     throw new Error(`Disallowed internal tokens found: ${disallowedTokens.join(', ')}`);
@@ -668,6 +673,48 @@ export async function generateConsentDocx(
     const text = resolveClauseText(clause, study, clauseEdits);
     for (const line of text.split('\n').filter(Boolean)) {
       children.push(bodyParagraph(line));
+    }
+  }
+
+  // ===== CONCISE SUMMARY (locked structured block — not from clause engine) =====
+  if (effectiveIncludeSummary) {
+    children.push(sectionHeading('CONCISE SUMMARY'));
+    children.push(bodyParagraph(
+      'Use the bulleted list below to draft your key information as a concise summary, and insert that language into the beginning of the consent, just before the "Purpose of the Research" section:'
+    ));
+
+    const requiredBullets = [
+      'The fact that consent is being sought for research and that participation is voluntary;',
+      'The purpose(s) of the research, expected duration of the subject\u2019s participation, and the procedures to be followed in the research;',
+      'Reasonably foreseeable risks or discomforts;',
+      'Benefits to subjects or others that may be reasonably expected from the research; and',
+      'Appropriate alternative procedures or courses of treatment, if any that might be advantageous to the prospective subject.',
+    ];
+    for (const bullet of requiredBullets) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: bullet, font: BODY_FONT, size: BODY_SIZE })],
+        spacing: { after: 60 },
+      }));
+    }
+
+    children.push(bodyParagraph('Other topics to consider:', { bold: true }));
+
+    const optionalBullets = [
+      'Most important reason why a participant would and would not want to participate.',
+      'How will they feel during the study?',
+      'What is the science?',
+      'What\u2019s the difference between being in the study, and being treated for their condition?',
+      'Will someone profit from the use of their samples or data? Will they?',
+      'What happens if they want to stop?',
+      'Have other people taken this drug/used this device? What happened to them?',
+    ];
+    for (const bullet of optionalBullets) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: bullet, font: BODY_FONT, size: BODY_SIZE })],
+        spacing: { after: 60 },
+      }));
     }
   }
 
@@ -777,6 +824,20 @@ export async function generateConsentDocx(
 
   // ===== BUILD DOCUMENT =====
   const doc = new Document({
+    numbering: {
+      config: [
+        {
+          reference: 'bullets',
+          levels: [{
+            level: 0,
+            format: LevelFormat.BULLET,
+            text: '\u2022',
+            alignment: AlignmentType.LEFT,
+            style: { paragraph: { indent: { left: 720, hanging: 360 } } },
+          }],
+        },
+      ],
+    },
     styles: {
       default: {
         document: {
