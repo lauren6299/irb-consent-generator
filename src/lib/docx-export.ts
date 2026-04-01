@@ -474,7 +474,7 @@ export async function generateConsentDocx(
   }
 
   // ===== SIGNATURE BLOCKS =====
-  const sigClauses = clauses.filter((c) => c.section === SIGNATURE_SECTION);
+  const sigClauses = exportClauses.filter((c) => c.section === SIGNATURE_SECTION);
   if (sigClauses.length > 0) {
     children.push(new Paragraph({ spacing: { before: 480 }, children: [] }));
 
