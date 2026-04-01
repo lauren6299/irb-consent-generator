@@ -676,11 +676,22 @@ export async function generateConsentDocx(
     }
   }
 
-  // ===== CONCISE SUMMARY (locked structured block — not from clause engine) =====
+  // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
+  const _popAdults = !!(answers?.population_adults);
+  const _popChildren = !!(answers?.population_children);
+  const _inclChildren = !!(answers?.includes_children);
+  const needsAdultChildBox = _popAdults && _inclChildren;
+  const docMode = (_popChildren && !_popAdults) ? 'child_only' : 'default';
+  console.log('[DocxExport] document_subject_mode =', docMode, '| population_adults =', _popAdults, '| population_children =', _popChildren, '| includes_children =', _inclChildren, '| show_box =', needsAdultChildBox);
+  if (needsAdultChildBox) {
+    children.push(...buildAdultChildParticipationBox());
+  }
+
+  // ===== CONCISE SUMMARY (anchor: after screening/adult-child box, before PURPOSE) =====
   if (effectiveIncludeSummary) {
     children.push(sectionHeading('CONCISE SUMMARY'));
     children.push(bodyParagraph(
-      'Use the bulleted list below to draft your key information as a concise summary, and insert that language into the beginning of the consent, just before the "Purpose of the Research" section:'
+      'Use the bulleted list below to draft your key information as a concise summary, and insert that language into the beginning of the consent, just before the \u201CPurpose of the Research\u201D section:'
     ));
 
     const requiredBullets = [
@@ -716,17 +727,6 @@ export async function generateConsentDocx(
         spacing: { after: 60 },
       }));
     }
-  }
-
-  // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
-  const _popAdults = !!(answers?.population_adults);
-  const _popChildren = !!(answers?.population_children);
-  const _inclChildren = !!(answers?.includes_children);
-  const needsAdultChildBox = _popAdults && _inclChildren;
-  const docMode = (_popChildren && !_popAdults) ? 'child_only' : 'default';
-  console.log('[DocxExport] document_subject_mode =', docMode, '| population_adults =', _popAdults, '| population_children =', _popChildren, '| includes_children =', _inclChildren, '| show_box =', needsAdultChildBox);
-  if (needsAdultChildBox) {
-    children.push(...buildAdultChildParticipationBox());
   }
 
   // ===== RENDER BODY SECTIONS =====
