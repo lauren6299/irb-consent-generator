@@ -23,6 +23,7 @@ interface StudyInfo {
   contact_name: string;
   contact_phone: string;
   contact_email: string;
+  irb_number?: string;
 }
 
 const DEFAULT_STUDY_INFO: StudyInfo = {
@@ -34,6 +35,7 @@ const DEFAULT_STUDY_INFO: StudyInfo = {
   contact_name: '',
   contact_phone: '',
   contact_email: '',
+  irb_number: '',
 };
 
 type Tab = 'setup' | 'characteristics';
