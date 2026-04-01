@@ -17,6 +17,7 @@ export type Database = {
       clauses: {
         Row: {
           active: boolean
+          child_only_text: string | null
           clause_key: string
           clause_text: string
           content_type: Database["public"]["Enums"]["clause_content_type"]
@@ -24,6 +25,7 @@ export type Database = {
           editable_fields: Json | null
           id: string
           insertion_anchor: string | null
+          mixed_population_text: string | null
           must_include: boolean
           mutually_exclusive_group: string | null
           required_level: Database["public"]["Enums"]["clause_required_level"]
@@ -37,6 +39,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          child_only_text?: string | null
           clause_key?: string
           clause_text: string
           content_type?: Database["public"]["Enums"]["clause_content_type"]
@@ -44,6 +47,7 @@ export type Database = {
           editable_fields?: Json | null
           id?: string
           insertion_anchor?: string | null
+          mixed_population_text?: string | null
           must_include?: boolean
           mutually_exclusive_group?: string | null
           required_level?: Database["public"]["Enums"]["clause_required_level"]
@@ -57,6 +61,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          child_only_text?: string | null
           clause_key?: string
           clause_text?: string
           content_type?: Database["public"]["Enums"]["clause_content_type"]
@@ -64,6 +69,7 @@ export type Database = {
           editable_fields?: Json | null
           id?: string
           insertion_anchor?: string | null
+          mixed_population_text?: string | null
           must_include?: boolean
           mutually_exclusive_group?: string | null
           required_level?: Database["public"]["Enums"]["clause_required_level"]
