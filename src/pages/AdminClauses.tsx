@@ -296,6 +296,11 @@ export default function AdminClauses() {
                             <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5 max-w-xs">
                               {clause.clause_text.slice(0, 80)}…
                             </p>
+                            {clause.child_only_text && (
+                              <Badge variant="outline" className="text-[9px] mt-0.5 gap-0.5 border-blue-500/30 text-blue-600">
+                                Child variant
+                              </Badge>
+                            )}
                           </TableCell>
                           <TableCell>
                             <span className="text-xs">{clause.section}</span>
