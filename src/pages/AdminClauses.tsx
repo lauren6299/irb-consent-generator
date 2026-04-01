@@ -43,6 +43,8 @@ const EMPTY_CLAUSE: Omit<Clause, 'id'> = {
   section: CONSENT_SECTIONS[0],
   subsection: '',
   clause_text: '',
+  child_only_text: null,
+  mixed_population_text: null,
   content_type: 'locked',
   required_level: 'required',
   trigger_expression: {},
