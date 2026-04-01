@@ -322,6 +322,8 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               )}
             </div>
           </div>
+        );
+      })}
 
       <div className="pt-6 border-t mt-8">
         <p className="text-xs text-muted-foreground italic text-center">
