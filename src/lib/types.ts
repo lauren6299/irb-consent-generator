@@ -28,13 +28,14 @@ export interface StudyAnswers {
   optional_followup_text: string;
 
   // Specimens
-  specimens: 'no_storage' | 'stored_this_study' | 'stored_future_research' | '';
-  collects_specimens: boolean;
+  specimens: 'no_storage' | 'stored_this_study' | 'stored_future_research' | ''; // legacy
+  specimen_storage_mode: 'no_specimens' | 'stored_for_this_study_only' | 'stored_for_future_research' | '';
+  collects_specimens: boolean;  // derived from specimen_storage_mode
   specimens_unlinked: boolean;
   specimens_sent_outside_stanford: boolean;
 
   // Future use
-  future_research_use_allowed: boolean;
+  future_research_use_allowed: boolean;  // derived from specimen_storage_mode
   commercial_value_possible: boolean;
 
   // Genetics
@@ -159,6 +160,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   required_visit_schedule_text: '',
   optional_followup_text: '',
   specimens: '',
+  specimen_storage_mode: '',
   collects_specimens: false,
   specimens_unlinked: false,
   specimens_sent_outside_stanford: false,

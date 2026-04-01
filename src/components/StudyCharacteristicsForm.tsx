@@ -142,28 +142,51 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
       {/* Specimens */}
       <Section title="Specimens">
         <div className="space-y-3">
-          <Select value={answers.specimens} onValueChange={(v) => set('specimens', v)}>
+          <Select
+            value={answers.specimen_storage_mode}
+            onValueChange={(v) => {
+              const mode = v as StudyAnswers['specimen_storage_mode'];
+              const collectsSpecimens = mode !== 'no_specimens' && mode !== '';
+              const futureResearch = mode === 'stored_for_future_research';
+              onChange({
+                ...answers,
+                specimen_storage_mode: mode,
+                collects_specimens: collectsSpecimens,
+                future_research_use_allowed: futureResearch,
+                // Reset secondary fields when no specimens
+                specimens_unlinked: collectsSpecimens ? answers.specimens_unlinked : false,
+                specimens_sent_outside_stanford: collectsSpecimens ? answers.specimens_sent_outside_stanford : false,
+                commercial_value_possible: collectsSpecimens ? answers.commercial_value_possible : false,
+              });
+            }}
+          >
             <SelectTrigger><SelectValue placeholder="Select specimen handling" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="no_storage">No Storage</SelectItem>
-              <SelectItem value="stored_this_study">Stored for This Study Only</SelectItem>
-              <SelectItem value="stored_future_research">Stored for Future Research</SelectItem>
+              <SelectItem value="no_specimens">No specimens collected</SelectItem>
+              <SelectItem value="stored_for_this_study_only">Specimens stored for this study only</SelectItem>
+              <SelectItem value="stored_for_future_research">Specimens stored for future research</SelectItem>
             </SelectContent>
           </Select>
-          <ToggleRow answers={answers} onChange={onChange} items={[
-            ['collects_specimens', 'Collects Specimens'],
-            ['specimens_unlinked', 'Specimens Unlinked'],
-            ['specimens_sent_outside_stanford', 'Sent Outside Stanford'],
-          ]} />
-        </div>
-      </Section>
 
-      {/* Future Use */}
-      <Section title="Future Use">
-        <ToggleRow answers={answers} onChange={onChange} items={[
-          ['future_research_use_allowed', 'Future Research Use Allowed'],
-          ['commercial_value_possible', 'Commercial Value Possible'],
-        ]} />
+          {/* Derived status indicators */}
+          {answers.specimen_storage_mode && answers.specimen_storage_mode !== 'no_specimens' && (
+            <div className="text-xs text-muted-foreground space-y-0.5 pl-1">
+              <p>• Collects specimens: <span className="font-medium text-foreground">Yes</span></p>
+              <p>• Future research use: <span className="font-medium text-foreground">{answers.future_research_use_allowed ? 'Yes' : 'No'}</span></p>
+            </div>
+          )}
+
+          {/* Secondary options – only when specimens are collected */}
+          {answers.collects_specimens && (
+            <div className="space-y-3 pl-2 border-l-2 border-primary/20">
+              <ToggleRow answers={answers} onChange={onChange} items={[
+                ['specimens_unlinked', 'Specimens Unlinked'],
+                ['specimens_sent_outside_stanford', 'Sent Outside Stanford'],
+                ['commercial_value_possible', 'Commercial Value Possible'],
+              ]} />
+            </div>
+          )}
+        </div>
       </Section>
 
       <Separator />

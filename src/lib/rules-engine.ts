@@ -219,7 +219,7 @@ export function getMissingRequiredFields(answers: StudyAnswers): string[] {
 
   if (!answers.data_type) missing.push('Data type must be selected');
   if (!answers.study_design) missing.push('Study design must be selected');
-  if (!answers.specimens) missing.push('Specimen handling must be selected');
+  if (!answers.specimen_storage_mode) missing.push('Specimen handling must be selected');
 
   const hasCompensation =
     answers.compensation_none ||
