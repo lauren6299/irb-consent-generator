@@ -237,6 +237,12 @@ export default function StudyEditor() {
                 {childOnlyWarnings.length} clauses using default text
               </Badge>
             )}
+            {protocolDirectorWarning && (
+              <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30" title={protocolDirectorWarning}>
+                <AlertTriangle className="h-3 w-3" />
+                PI info incomplete
+              </Badge>
+            )}
             {missingFields.length > 0 && (
               <Badge variant="outline" className="gap-1 text-warning border-warning/30">
                 <AlertTriangle className="h-3 w-3" />
