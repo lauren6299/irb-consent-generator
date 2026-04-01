@@ -76,6 +76,8 @@ export default function StudyEditor() {
           title: data.title,
           short_title: data.short_title ?? '',
           pi_name: data.pi_name ?? '',
+          pi_address: (data as any).pi_address ?? '',
+          pi_phone: (data as any).pi_phone ?? '',
           protocol_number: data.protocol_number ?? '',
           sponsor: data.sponsor ?? '',
           contact_name: data.contact_name ?? '',
