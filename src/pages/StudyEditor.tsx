@@ -119,6 +119,7 @@ export default function StudyEditor() {
     return null;
   }, [study.pi_name, study.pi_address, study.pi_phone]);
 
+  const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
     setClauseEdits(newEdits);
   }, []);
 
