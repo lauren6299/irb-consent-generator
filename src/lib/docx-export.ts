@@ -183,14 +183,15 @@ function substitutePlaceholders(
 }
 
 /**
- * Find unresolved placeholders (anything like [SOME_FIELD] still in the text).
+ * Find disallowed unresolved placeholders (tokens NOT in the approved editable list).
+ * Approved editable prompts are allowed to remain in the exported .docx.
  */
 export function findUnresolvedPlaceholders(
   clauses: ExportClause[],
   study: StudyInfo,
   clauseEdits?: ClauseEdits
 ): string[] {
-  const unresolved = new Set<string>();
+  const disallowed = new Set<string>();
   for (const clause of clauses) {
     const edits = clauseEdits?.[clause.clause_key];
     let text: string;
@@ -199,10 +200,17 @@ export function findUnresolvedPlaceholders(
     } else {
       text = substitutePlaceholders(clause.clause_text, study, edits?.fields);
     }
-    const matches = text.match(/\[[A-Z_]+\]/g);
-    if (matches) matches.forEach((m) => unresolved.add(m));
+    const matches = text.match(/\[[a-zA-Z_]+\]/g);
+    if (matches) {
+      matches.forEach((m) => {
+        const lower = m.toLowerCase();
+        if (!APPROVED_EDITABLE_PROMPTS.has(lower)) {
+          disallowed.add(m);
+        }
+      });
+    }
   }
-  return Array.from(unresolved);
+  return Array.from(disallowed);
 }
 
 // ---------------------------------------------------------------------------
