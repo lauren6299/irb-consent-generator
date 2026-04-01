@@ -244,6 +244,128 @@ function signatureBlock(label: string): Paragraph[] {
 }
 
 // ---------------------------------------------------------------------------
+// Stanford IRB repeating page header (table-based)
+// ---------------------------------------------------------------------------
+
+function buildStanfordHeader(study: StudyInfo): Table {
+  const HEADER_FONT_SIZE = 16; // 8pt
+  const HEADER_FONT_SIZE_LG = 18; // 9pt
+  const HEADER_FONT_SIZE_TITLE = 20; // 10pt
+
+  const solidBorder = { style: BorderStyle.SINGLE, size: 6, color: '000000' };
+  const dashedBorder = { style: BorderStyle.DASHED, size: 4, color: '000000' };
+  const noBorder = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+
+  const leftCellBorders = {
+    top: solidBorder, bottom: solidBorder, left: solidBorder, right: solidBorder,
+  };
+  const irbBoxBorders = {
+    top: dashedBorder, bottom: dashedBorder, left: dashedBorder, right: dashedBorder,
+  };
+  const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
+
+  const irbNumber = study.irb_number || 'XXXXX';
+
+  // Left cell: Stanford title + Protocol Director + Protocol Title
+  const leftCell = new TableCell({
+    borders: leftCellBorders,
+    width: { size: 6200, type: WidthType.DXA },
+    verticalAlign: VerticalAlign.TOP,
+    margins: { top: 60, bottom: 60, left: 100, right: 100 },
+    children: [
+      new Paragraph({
+        spacing: { after: 40 },
+        children: [
+          new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, font: HEADING_FONT, size: HEADER_FONT_SIZE_TITLE }),
+          new TextRun({ text: '   Research Consent Form', font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+        ],
+      }),
+      new Paragraph({
+        spacing: { after: 20 },
+        children: [
+          new TextRun({ text: 'Protocol Director: ', bold: true, font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+          new TextRun({ text: study.pi_name, font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+        ],
+      }),
+      new Paragraph({
+        spacing: { after: 0 },
+        children: [
+          new TextRun({ text: 'Protocol Title: ', bold: true, font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+          new TextRun({ text: study.title, font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+        ],
+      }),
+    ],
+  });
+
+  // Right cell: IRB box on top, IRB# on bottom
+  const rightCell = new TableCell({
+    borders: noBorders,
+    width: { size: 3160, type: WidthType.DXA },
+    verticalAlign: VerticalAlign.TOP,
+    margins: { top: 0, bottom: 0, left: 100, right: 0 },
+    children: [
+      // IRB Use Only dashed box (nested table)
+      new Table({
+        width: { size: 3000, type: WidthType.DXA },
+        columnWidths: [3000],
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                borders: irbBoxBorders,
+                width: { size: 3000, type: WidthType.DXA },
+                margins: { top: 40, bottom: 40, left: 80, right: 80 },
+                children: [
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 20 },
+                    children: [
+                      new TextRun({ text: 'IRB Use Only', bold: true, italics: true, font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+                    ],
+                  }),
+                  new Paragraph({
+                    spacing: { after: 10 },
+                    children: [
+                      new TextRun({ text: 'Approval Date: ', font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+                      new TextRun({ text: 'Monthname dd, 20yy', font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+                    ],
+                  }),
+                  new Paragraph({
+                    spacing: { after: 0 },
+                    children: [
+                      new TextRun({ text: 'Expiration Date: ', font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+                      new TextRun({ text: 'Monthname dd, 20yy', font: HEADING_FONT, size: HEADER_FONT_SIZE }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      }),
+      // IRB# below the box
+      new Paragraph({
+        alignment: AlignmentType.RIGHT,
+        spacing: { before: 60 },
+        children: [
+          new TextRun({ text: `IRB# ${irbNumber}`, font: HEADING_FONT, size: HEADER_FONT_SIZE_LG }),
+        ],
+      }),
+    ],
+  });
+
+  return new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [6200, 3160],
+    rows: [
+      new TableRow({
+        children: [leftCell, rightCell],
+      }),
+    ],
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Resolve final text for a clause
 // ---------------------------------------------------------------------------
 
