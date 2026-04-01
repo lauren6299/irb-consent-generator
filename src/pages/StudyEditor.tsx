@@ -18,6 +18,8 @@ interface StudyInfo {
   title: string;
   short_title: string;
   pi_name: string;
+  pi_address: string;
+  pi_phone: string;
   protocol_number: string;
   sponsor: string;
   contact_name: string;
@@ -30,6 +32,8 @@ const DEFAULT_STUDY_INFO: StudyInfo = {
   title: '',
   short_title: '',
   pi_name: '',
+  pi_address: '',
+  pi_phone: '',
   protocol_number: '',
   sponsor: '',
   contact_name: '',
