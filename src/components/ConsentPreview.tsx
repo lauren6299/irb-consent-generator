@@ -323,6 +323,28 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                   />
                 </div>
               )}
+              {/* Procedures helper guidance – editor only, never exported */}
+              {section === 'procedures' && (
+                <details className="rounded-md border border-muted p-3 bg-muted/30">
+                  <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+                    Drafting Guidance (not included in export)
+                  </summary>
+                  <div className="mt-2 space-y-2">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Describe study procedures in plain language. Use a clear, step-by-step or chronological format. Consider including a schedule, chart, or visuals if helpful. Define all medical terms and avoid acronyms when possible.
+                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">Include, as applicable:</p>
+                    <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
+                      <li>What is experimental in the study</li>
+                      <li>The purpose of each procedure</li>
+                      <li>How often procedures occur and how long they take</li>
+                      <li>Any invasive procedures</li>
+                      <li>Contraception requirements, if relevant</li>
+                      <li>Details of samples collected (type, frequency, and amount), expressed in simple terms (e.g., tablespoons of blood)</li>
+                    </ul>
+                  </div>
+                </details>
+              )}
             </div>
           </div>
         );
