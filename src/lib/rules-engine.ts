@@ -106,11 +106,16 @@ export function assembleConsentForm(
   answers: StudyAnswers
 ): IncludedClause[] {
   const answersMap = answers as unknown as Record<string, unknown>;
+  const mode = getDocumentSubjectMode(answers);
   const result = runAssembly(clauses, answersMap);
-  return result.map((r) => ({
-    ...(r._clause as Clause),
-    inclusion_reason: r.inclusion_reason,
-  }));
+  return result.map((r) => {
+    const resolved = resolveClauseTextVariant(r._clause, mode);
+    return {
+      ...(r._clause as Clause),
+      clause_text: resolved,
+      inclusion_reason: r.inclusion_reason,
+    };
+  });
 }
 
 // Shared core assembly logic
