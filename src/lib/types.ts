@@ -90,6 +90,9 @@ export interface StudyAnswers {
 
   // Site Config
   site_requires_participant_id_on_each_page: boolean;
+  participant_id_value: string;
+  use_alternate_page_identification_method: boolean;
+  keep_blank_box_for_label_cover: boolean;
 
   // Contacts
   include_appointment_contact: boolean;
@@ -186,6 +189,9 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   uses_legally_authorized_representative: false,
   needs_witness_or_short_form_process: false,
   site_requires_participant_id_on_each_page: false,
+  participant_id_value: '',
+  use_alternate_page_identification_method: false,
+  keep_blank_box_for_label_cover: false,
   include_appointment_contact: false,
   future_contact_permission_requested: false,
   include_failure_follow_instructions_reason: false,

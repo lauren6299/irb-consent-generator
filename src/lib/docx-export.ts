@@ -500,6 +500,84 @@ function buildStanfordHeader(study: StudyInfo): Table {
 }
 
 // ---------------------------------------------------------------------------
+// Participant ID repeating footer (SHC / Stanford Medicine Children's Health)
+// ---------------------------------------------------------------------------
+
+function buildParticipantIdFooter(answers: Partial<StudyAnswers>): Footer {
+  const showBox = !answers.use_alternate_page_identification_method || !!answers.keep_blank_box_for_label_cover;
+  const idValue = answers.participant_id_value || '';
+
+  const solidBorder = { style: BorderStyle.SINGLE, size: 4, color: '000000' };
+  const noBorder = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+  const cellBorders = { top: solidBorder, bottom: solidBorder, left: solidBorder, right: solidBorder };
+  const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
+
+  const FOOTER_FONT = 'Arial';
+  const FOOTER_SIZE = 14; // 7pt
+
+  // Left cell: Participant ID box
+  const leftChildren: Paragraph[] = [];
+  if (showBox) {
+    leftChildren.push(
+      new Paragraph({
+        spacing: { after: 0 },
+        children: [
+          new TextRun({ text: 'Participant ID: ', bold: true, font: FOOTER_FONT, size: FOOTER_SIZE }),
+          new TextRun({ text: idValue || '________________________', font: FOOTER_FONT, size: FOOTER_SIZE }),
+        ],
+      })
+    );
+  }
+
+  const leftCell = new TableCell({
+    borders: showBox ? cellBorders : noBorders,
+    width: { size: 6500, type: WidthType.DXA },
+    margins: { top: 40, bottom: 40, left: 80, right: 80 },
+    verticalAlign: VerticalAlign.CENTER,
+    children: leftChildren.length > 0 ? leftChildren : [new Paragraph({ children: [] })],
+  });
+
+  // Right cell: STUDY barcode-style block
+  const barcodeLines = ['║║║║║║║║║║║║║'];
+  const rightCell = new TableCell({
+    borders: noBorders,
+    width: { size: 2860, type: WidthType.DXA },
+    margins: { top: 20, bottom: 20, left: 80, right: 0 },
+    verticalAlign: VerticalAlign.CENTER,
+    children: [
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 0 },
+        children: [new TextRun({ text: barcodeLines[0], font: 'Courier New', size: 16 })],
+      }),
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 0 },
+        children: [new TextRun({ text: 'STUDY', bold: true, font: FOOTER_FONT, size: FOOTER_SIZE })],
+      }),
+    ],
+  });
+
+  const footerTable = new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [6500, 2860],
+    rows: [new TableRow({ children: [leftCell, rightCell] })],
+  });
+
+  return new Footer({
+    children: [
+      footerTable as unknown as Paragraph,
+      new Paragraph({
+        spacing: { before: 40, after: 0 },
+        children: [
+          new TextRun({ text: 'SU MainICF HIPAA rev 03/2026', font: FOOTER_FONT, size: 12, color: '666666' }),
+        ],
+      }),
+    ],
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Resolve final text for a clause
 // ---------------------------------------------------------------------------
 
@@ -524,6 +602,14 @@ export async function generateConsentDocx(
   // --- Validate required header fields ---
   if (!study.pi_name || !study.title) {
     throw new Error('Protocol Title and Protocol Director are required for the Stanford repeating header');
+  }
+
+  // --- Validate Participant ID is not an SSN ---
+  if (answers?.site_requires_participant_id_on_each_page && answers.participant_id_value) {
+    const stripped = (answers.participant_id_value as string).replace(/[\s-]/g, '');
+    if (/^\d{9}$/.test(stripped) && /^\d{3}-?\d{2}-?\d{4}$/.test((answers.participant_id_value as string).replace(/\s/g, ''))) {
+      throw new Error('Participant ID must not use a social security number');
+    }
   }
 
   // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
@@ -710,7 +796,7 @@ export async function generateConsentDocx(
         properties: {
           page: {
             size: { width: 12240, height: 15840 },
-            margin: { top: 2160, right: 1440, bottom: 1440, left: 1440 },
+            margin: { top: 2160, right: 1440, bottom: answers?.site_requires_participant_id_on_each_page ? 1800 : 1440, left: 1440 },
           },
         },
         headers: {
@@ -721,17 +807,19 @@ export async function generateConsentDocx(
           }),
         },
         footers: {
-          default: new Footer({
-            children: [
-              new Paragraph({
+          default: answers?.site_requires_participant_id_on_each_page
+            ? buildParticipantIdFooter(answers)
+            : new Footer({
                 children: [
-                  new TextRun({ text: 'Page ', size: 16, font: HEADING_FONT }),
-                  new TextRun({ children: [PageNumber.CURRENT], size: 16, font: HEADING_FONT }),
+                  new Paragraph({
+                    children: [
+                      new TextRun({ text: 'Page ', size: 16, font: HEADING_FONT }),
+                      new TextRun({ children: [PageNumber.CURRENT], size: 16, font: HEADING_FONT }),
+                    ],
+                    alignment: AlignmentType.CENTER,
+                  }),
                 ],
-                alignment: AlignmentType.CENTER,
               }),
-            ],
-          }),
         },
         children,
       },
