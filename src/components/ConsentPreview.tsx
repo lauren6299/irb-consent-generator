@@ -119,6 +119,22 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
         )}
       </div>
 
+      {/* Adult + Child Participation Box */}
+      {showAdultChildBox && (
+        <div className="border border-foreground p-4 space-y-3">
+          <p className="text-sm">Please check all that are applicable:</p>
+          <p className="text-sm">☐  I am an adult participant in this study.</p>
+          <p className="text-sm">Print your name here:</p>
+          <p className="text-sm">______________________________________________________</p>
+          <p className="text-sm">
+            ☐  I am the parent or guardian granting permission for a child in this study (the use of
+            &quot;you&quot; refers to &quot;your child&quot; or &quot;your ward.&quot;)
+          </p>
+          <p className="text-sm">Print child&apos;s name here:</p>
+          <p className="text-sm">______________________________________________________</p>
+        </div>
+      )}
+
       {CONSENT_SECTIONS.map((section) => {
         const sectionClauses = grouped[section];
         if (!sectionClauses || sectionClauses.length === 0) return null;
