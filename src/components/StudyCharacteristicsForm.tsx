@@ -281,11 +281,40 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
         ]} />
       </Section>
 
-      {/* Site Config */}
-      <Section title="Site Config">
+      {/* Site Config / Participant ID Footer */}
+      <Section title="Site Config / Participant ID">
         <ToggleRow answers={answers} onChange={onChange} items={[
-          ['site_requires_participant_id_on_each_page', 'Participant ID on Each Page'],
+          ['site_requires_participant_id_on_each_page', 'Participant ID on Each Page (SHC/SMCH)'],
         ]} />
+        {answers.site_requires_participant_id_on_each_page && (
+          <div className="space-y-3 mt-3 pl-2 border-l-2 border-primary/20">
+            <div className="space-y-1">
+              <Label htmlFor="participant_id_value" className="text-sm">Participant ID Value</Label>
+              <Input
+                id="participant_id_value"
+                className="text-sm bg-background"
+                placeholder="Name, initials, MRN, or study number (leave blank to fill in Word)"
+                value={answers.participant_id_value || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  onChange({ ...answers, participant_id_value: val });
+                }}
+              />
+              {answers.participant_id_value && /^\d{3}-?\d{2}-?\d{4}$/.test(answers.participant_id_value.replace(/\s/g, '')) && (
+                <p className="text-xs text-destructive font-medium">⚠ Participant ID must not use a social security number</p>
+              )}
+              <p className="text-xs text-muted-foreground">Allowed: name, initials, MRN, study number. Not allowed: signature, SSN.</p>
+            </div>
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['use_alternate_page_identification_method', 'Use Alternate ID Method (e.g. chart label)'],
+            ]} />
+            {answers.use_alternate_page_identification_method && (
+              <ToggleRow answers={answers} onChange={onChange} items={[
+                ['keep_blank_box_for_label_cover', 'Keep Blank Box for Label Cover'],
+              ]} />
+            )}
+          </div>
+        )}
       </Section>
 
       {/* Contacts */}
