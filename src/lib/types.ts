@@ -199,6 +199,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   include_appointment_contact: false,
   future_contact_permission_requested: false,
   include_summary: true,
+  concise_summary_text: '',
   include_failure_follow_instructions_reason: false,
   include_unanticipated_circumstances_reason: false,
   use_no_participation_alternative: false,
