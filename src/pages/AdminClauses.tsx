@@ -396,8 +396,28 @@ export default function AdminClauses() {
                   <Input value={form.subsection} onChange={(e) => setForm({ ...form, subsection: e.target.value })} placeholder="Optional subsection" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Clause Text</Label>
+                  <Label className="text-xs">Clause Text (Default / Adult)</Label>
                   <Textarea value={form.clause_text} onChange={(e) => setForm({ ...form, clause_text: e.target.value })} rows={6} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Child-Only Text <span className="text-muted-foreground">(optional)</span></Label>
+                  <Textarea
+                    value={form.child_only_text ?? ''}
+                    onChange={(e) => setForm({ ...form, child_only_text: e.target.value || null })}
+                    rows={4}
+                    placeholder="Alternate wording for child-only studies. Leave empty to use default text."
+                    className="border-blue-500/20 focus-visible:ring-blue-500/30"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Mixed Population Text <span className="text-muted-foreground">(optional, future use)</span></Label>
+                  <Textarea
+                    value={form.mixed_population_text ?? ''}
+                    onChange={(e) => setForm({ ...form, mixed_population_text: e.target.value || null })}
+                    rows={3}
+                    placeholder="Alternate wording for mixed adult+child studies. Reserved for future use."
+                    className="border-muted"
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-1.5">
