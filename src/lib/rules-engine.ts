@@ -107,9 +107,14 @@ export function assembleConsentForm(
 ): IncludedClause[] {
   const answersMap = answers as unknown as Record<string, unknown>;
   const mode = getDocumentSubjectMode(answers);
+  console.log('[ConsentAssembly] document_subject_mode =', mode, '| population_children =', answers.population_children, '| population_adults =', answers.population_adults);
   const result = runAssembly(clauses, answersMap);
   return result.map((r) => {
     const resolved = resolveClauseTextVariant(r._clause, mode);
+    const textSource = (mode === 'child_only' && r._clause.child_only_text) ? 'child_only_text' : 'clause_text';
+    if (mode === 'child_only') {
+      console.log(`[ClauseResolve] ${r._clause.clause_key} → ${textSource}${r._clause.child_only_text ? '' : ' (no child variant available)'}`);
+    }
     return {
       ...(r._clause as Clause),
       clause_text: resolved,
