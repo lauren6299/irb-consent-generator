@@ -96,6 +96,18 @@ const ANCHOR_HEADING_MAP: Record<string, string> = {
 /** Sections whose content is rendered in the title/intro area, not as a headed section */
 const INTRO_SECTIONS = new Set(['header', 'summary']);
 
+/**
+ * Clause keys that are rendered ONLY in the repeating page header.
+ * These must never appear in the document body.
+ */
+const HEADER_ONLY_CLAUSE_KEYS = new Set([
+  'stanford_consent_title',
+  'study_metadata_block',
+  'protocol_title_block',
+  'sponsor_block',
+  'investigator_block',
+]);
+
 /** Sections rendered as signature blocks, not normal body text */
 const SIGNATURE_SECTION = 'signatures';
 
