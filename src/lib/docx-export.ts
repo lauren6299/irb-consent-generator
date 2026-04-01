@@ -581,7 +581,10 @@ export async function generateConsentDocx(
   }
 
   // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
-  const needsAdultChildBox = !!(answers?.includes_adults && answers?.includes_children);
+  const _popAdults = !!(answers?.population_adults);
+  const _inclChildren = !!(answers?.includes_children);
+  const needsAdultChildBox = _popAdults && _inclChildren;
+  console.log('[AdultChildBox] population_adults =', _popAdults, '| includes_children =', _inclChildren, '| show_box =', needsAdultChildBox);
   if (needsAdultChildBox) {
     children.push(...buildAdultChildParticipationBox());
   }
