@@ -5,6 +5,8 @@ interface StudyInfo {
   title: string;
   short_title: string;
   pi_name: string;
+  pi_address: string;
+  pi_phone: string;
   protocol_number: string;
   sponsor: string;
   contact_name: string;
