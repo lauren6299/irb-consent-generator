@@ -130,12 +130,14 @@ export default function StudyEditor() {
           title: study.title,
           short_title: study.short_title,
           pi_name: study.pi_name,
+          pi_address: study.pi_address,
+          pi_phone: study.pi_phone,
           protocol_number: study.protocol_number,
           sponsor: study.sponsor,
           contact_name: study.contact_name,
           contact_phone: study.contact_phone,
           contact_email: study.contact_email,
-        }).eq('id', studyId);
+        } as any).eq('id', studyId);
 
         await supabase.from('study_answers').upsert({
           study_id: studyId,
