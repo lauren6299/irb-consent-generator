@@ -29,7 +29,7 @@ export default function StudySetupForm({ study, onChange }: Props) {
       <h3 className="font-heading text-lg font-semibold">Study Information</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="title">Study Title *</Label>
+          <Label htmlFor="title">Study Title</Label>
           <Input id="title" value={study.title} onChange={(e) => update('title', e.target.value)} placeholder="Full study title" />
         </div>
         <div className="space-y-2">
@@ -37,8 +37,9 @@ export default function StudySetupForm({ study, onChange }: Props) {
           <Input id="short_title" value={study.short_title} onChange={(e) => update('short_title', e.target.value)} placeholder="Abbreviated title" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="pi_name">Protocol Director / Principal Investigator *</Label>
+          <Label htmlFor="pi_name">Protocol Director</Label>
           <Input id="pi_name" value={study.pi_name} onChange={(e) => update('pi_name', e.target.value)} placeholder="PI full name" />
+          <p className="text-xs text-muted-foreground">Used to populate contact information in the consent form. This can be edited later in the exported document.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="pi_phone">Protocol Director Phone</Label>
