@@ -152,32 +152,51 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
         </div>
       )}
 
-      {/* Concise Summary (locked structured block) */}
+      {/* Concise Summary */}
       {includeSummary && (
         <div id="section-summary" className="space-y-3">
           <h3 className="font-heading text-base font-bold border-b border-primary/20 pb-1 mb-3">
             CONCISE SUMMARY
           </h3>
-          <p className="text-sm leading-relaxed">
-            Use the bulleted list below to draft your key information as a concise summary, and insert that language into the beginning of the consent, just before the &quot;Purpose of the Research&quot; section:
-          </p>
-          <ul className="list-disc pl-5 text-sm leading-relaxed space-y-1">
-            <li>The fact that consent is being sought for research and that participation is voluntary;</li>
-            <li>The purpose(s) of the research, expected duration of the subject&apos;s participation, and the procedures to be followed in the research;</li>
-            <li>Reasonably foreseeable risks or discomforts;</li>
-            <li>Benefits to subjects or others that may be reasonably expected from the research; and</li>
-            <li>Appropriate alternative procedures or courses of treatment, if any that might be advantageous to the prospective subject.</li>
-          </ul>
-          <p className="text-sm leading-relaxed font-medium mt-3">Other topics to consider:</p>
-          <ul className="list-disc pl-5 text-sm leading-relaxed space-y-1">
-            <li>Most important reason why a participant would and would not want to participate.</li>
-            <li>How will they feel during the study?</li>
-            <li>What is the science?</li>
-            <li>What&apos;s the difference between being in the study, and being treated for their condition?</li>
-            <li>Will someone profit from the use of their samples or data? Will they?</li>
-            <li>What happens if they want to stop?</li>
-            <li>Have other people taken this drug/used this device? What happened to them?</li>
-          </ul>
+
+          {/* Editable participant-facing text */}
+          <Textarea
+            className="text-sm leading-relaxed min-h-[120px] bg-background"
+            placeholder="Enter the concise summary text that will appear in the consent form…"
+            value={conciseSummaryText}
+            onChange={(e) => onConciseSummaryTextChange?.(e.target.value)}
+            disabled={!onConciseSummaryTextChange}
+          />
+
+          {/* Helper guidance – editor only, never exported */}
+          <details className="rounded-md border border-muted p-3 bg-muted/30">
+            <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+              Drafting Guidance (not included in export)
+            </summary>
+            <div className="mt-2 space-y-2">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Use the bulleted list below to draft your key information as a concise summary.
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">Required points to cover:</p>
+              <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
+                <li>The fact that consent is being sought for research and that participation is voluntary</li>
+                <li>The purpose(s) of the research, expected duration of the subject's participation, and the procedures to be followed in the research</li>
+                <li>Reasonably foreseeable risks or discomforts</li>
+                <li>Benefits to subjects or others that may be reasonably expected from the research</li>
+                <li>Appropriate alternative procedures or courses of treatment, if any that might be advantageous to the prospective subject</li>
+              </ul>
+              <p className="text-xs font-medium text-muted-foreground mt-2">Optional other topics to consider:</p>
+              <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
+                <li>Most important reason why a participant would and would not want to participate</li>
+                <li>How will they feel during the study?</li>
+                <li>What is the science?</li>
+                <li>What's the difference between being in the study, and being treated for their condition?</li>
+                <li>Will someone profit from the use of their samples or data? Will they?</li>
+                <li>What happens if they want to stop?</li>
+                <li>Have other people taken this drug/used this device? What happened to them?</li>
+              </ul>
+            </div>
+          </details>
         </div>
       )}
 
