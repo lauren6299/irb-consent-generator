@@ -20,7 +20,7 @@ import {
 } from 'docx';
 import { saveAs } from 'file-saver';
 import type { ClauseEdits } from '@/components/ConsentPreview';
-import { SECTION_ORDER, ANCHOR_ORDER } from './types';
+import { SECTION_ORDER, ANCHOR_ORDER, StudyAnswers } from './types';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -311,6 +311,73 @@ function signatureBlock(label: string): Paragraph[] {
 }
 
 // ---------------------------------------------------------------------------
+// Adult + Child Participation Box (Stanford IRB requirement)
+// ---------------------------------------------------------------------------
+
+function buildAdultChildParticipationBox(): Paragraph[] {
+  const solidBorder = { style: BorderStyle.SINGLE, size: 6, color: '000000' };
+  const cellBorders = { top: solidBorder, bottom: solidBorder, left: solidBorder, right: solidBorder };
+
+  const boxTable = new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [9360],
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            borders: cellBorders,
+            width: { size: 9360, type: WidthType.DXA },
+            margins: { top: 120, bottom: 120, left: 200, right: 200 },
+            children: [
+              new Paragraph({
+                spacing: { after: 200 },
+                children: [new TextRun({ text: 'Please check all that are applicable:', font: BODY_FONT, size: BODY_SIZE })],
+              }),
+              new Paragraph({
+                spacing: { after: 80 },
+                children: [new TextRun({ text: '☐  I am an adult participant in this study.', font: BODY_FONT, size: BODY_SIZE })],
+              }),
+              new Paragraph({
+                spacing: { after: 80 },
+                children: [new TextRun({ text: 'Print your name here:', font: BODY_FONT, size: BODY_SIZE })],
+              }),
+              new Paragraph({
+                spacing: { after: 240 },
+                children: [new TextRun({ text: '______________________________________________________', font: BODY_FONT, size: BODY_SIZE })],
+              }),
+              new Paragraph({
+                spacing: { after: 80 },
+                children: [
+                  new TextRun({
+                    text: '☐  I am the parent or guardian granting permission for a child in this study (the use of "you" refers to "your child" or "your ward.")',
+                    font: BODY_FONT,
+                    size: BODY_SIZE,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                spacing: { after: 80 },
+                children: [new TextRun({ text: "Print child's name here:", font: BODY_FONT, size: BODY_SIZE })],
+              }),
+              new Paragraph({
+                spacing: { after: 0 },
+                children: [new TextRun({ text: '______________________________________________________', font: BODY_FONT, size: BODY_SIZE })],
+              }),
+            ],
+          }),
+        ],
+      }),
+    ],
+  });
+
+  return [
+    new Paragraph({ spacing: { before: 240 }, children: [] }),
+    boxTable as unknown as Paragraph,
+    new Paragraph({ spacing: { after: 240 }, children: [] }),
+  ];
+}
+
+// ---------------------------------------------------------------------------
 // Stanford IRB repeating page header (table-based)
 // ---------------------------------------------------------------------------
 
@@ -451,7 +518,8 @@ function resolveClauseText(clause: ExportClause, study: StudyInfo, clauseEdits?:
 export async function generateConsentDocx(
   study: StudyInfo,
   clauses: ExportClause[],
-  clauseEdits?: ClauseEdits
+  clauseEdits?: ClauseEdits,
+  answers?: Partial<StudyAnswers>
 ) {
   // --- Validate required header fields ---
   if (!study.pi_name || !study.title) {
@@ -510,6 +578,12 @@ export async function generateConsentDocx(
     for (const line of text.split('\n').filter(Boolean)) {
       children.push(bodyParagraph(line));
     }
+  }
+
+  // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
+  const needsAdultChildBox = !!(answers?.includes_adults && answers?.includes_children);
+  if (needsAdultChildBox) {
+    children.push(...buildAdultChildParticipationBox());
   }
 
   // ===== RENDER BODY SECTIONS =====

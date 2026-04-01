@@ -169,7 +169,7 @@ export default function StudyEditor() {
     // The export function itself validates that no disallowed internal tokens remain.
 
     try {
-      const { fileName } = await generateConsentDocx(study, assembled, clauseEdits);
+      const { fileName } = await generateConsentDocx(study, assembled, clauseEdits, answers);
       if (studyId) {
         await supabase.from('generated_documents').insert({
           study_id: studyId,
@@ -289,6 +289,7 @@ export default function StudyEditor() {
                 study={study}
                 edits={clauseEdits}
                 onEditChange={handleClauseEdits}
+                showAdultChildBox={!!(answers.includes_adults && answers.includes_children)}
               />
             </div>
           </ScrollArea>
