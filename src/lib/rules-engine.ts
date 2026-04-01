@@ -7,6 +7,8 @@ interface Clause {
   section: string;
   subsection: string;
   clause_text: string;
+  child_only_text?: string | null;
+  mixed_population_text?: string | null;
   content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack' | 'structured_block';
   required_level: 'required' | 'conditional' | 'optional';
   trigger_expression: Record<string, unknown> | null;
