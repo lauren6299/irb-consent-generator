@@ -339,6 +339,8 @@ export default function StudyEditor() {
                 onConciseSummaryTextChange={(text) => setAnswers({ ...answers, concise_summary_text: text })}
                 purposeEnrollmentText={answers.purpose_enrollment_text}
                 onPurposeEnrollmentTextChange={(text) => setAnswers({ ...answers, purpose_enrollment_text: text })}
+                collectsSpecimens={answers.collects_specimens}
+                futureResearchUseAllowed={answers.future_research_use_allowed}
               />
             </div>
           </ScrollArea>

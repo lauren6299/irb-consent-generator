@@ -260,25 +260,47 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                         />
                         {/* Procedures helper guidance – anchored directly under the first free_text box */}
                         {section === 'procedures' && (
-                          <details className="mt-2 rounded-md border border-muted p-3 bg-muted/30">
-                            <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
-                              Drafting Guidance (not included in export)
-                            </summary>
-                            <div className="mt-2 space-y-2">
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                Describe study procedures in plain language. Use a clear, step-by-step or chronological format. Consider including a schedule, chart, or visuals if helpful. Define all medical terms and avoid acronyms when possible.
-                              </p>
-                              <p className="text-xs font-medium text-muted-foreground">Include, as applicable:</p>
-                              <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
-                                <li>What is experimental in the study</li>
-                                <li>The purpose of each procedure</li>
-                                <li>How often procedures occur and how long they take</li>
-                                <li>Any invasive procedures</li>
-                                <li>Contraception requirements, if relevant</li>
-                                <li>Details of samples collected (type, frequency, and amount), expressed in simple terms (e.g., tablespoons of blood)</li>
-                              </ul>
-                            </div>
-                          </details>
+                          <>
+                            <details className="mt-2 rounded-md border border-muted p-3 bg-muted/30">
+                              <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+                                Drafting Guidance (not included in export)
+                              </summary>
+                              <div className="mt-2 space-y-2">
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                  Describe study procedures in plain language. Use a clear, step-by-step or chronological format. Consider including a schedule, chart, or visuals if helpful. Define all medical terms and avoid acronyms when possible.
+                                </p>
+                                <p className="text-xs font-medium text-muted-foreground">Include, as applicable:</p>
+                                <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
+                                  <li>What is experimental in the study</li>
+                                  <li>The purpose of each procedure</li>
+                                  <li>How often procedures occur and how long they take</li>
+                                  <li>Any invasive procedures</li>
+                                  <li>Contraception requirements, if relevant</li>
+                                  <li>Details of samples collected (type, frequency, and amount), expressed in simple terms (e.g., tablespoons of blood)</li>
+                                </ul>
+                              </div>
+                            </details>
+
+                            {/* Future Use of Private Information and/or Specimens – locked verbatim block */}
+                            {collectsSpecimens && (
+                              <div className="mt-4 clause-required">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <Badge variant="outline" className={`text-[10px] gap-1 ${CONTENT_TYPE_LABELS.locked.className}`}>
+                                    <Lock className="h-3 w-3" /> {CONTENT_TYPE_LABELS.locked.label}
+                                  </Badge>
+                                </div>
+                                <h4 className="text-sm font-semibold mb-2">Future Use of Private Information and/or Specimens</h4>
+                                <p className="text-sm leading-relaxed mb-3">
+                                  Research using private information and/or specimens is an important way to try to understand human disease. You are being given this information because the investigators want to save private information and/or specimens for future research.
+                                </p>
+                                <p className="text-sm leading-relaxed">
+                                  {futureResearchUseAllowed
+                                    ? 'Identifiers might be removed from identifiable private information and/or identifiable specimens and, after such removal, the information and/or specimens could be used for future research studies or distributed to another investigator for future research studies without additional informed consent from you.'
+                                    : 'Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.'}
+                                </p>
+                              </div>
+                            )}
+                          </>
                         )}
                       </>
                     ) : (
