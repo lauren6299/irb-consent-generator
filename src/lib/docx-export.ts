@@ -524,9 +524,15 @@ export async function generateConsentDocx(
       }
     }
 
-    // Body text
+    // Body text — deduplicate Bill of Rights heading that may appear in clause text
     const text = resolveClauseText(clause, study, clauseEdits);
+    const billOfRightsHeading = "EXPERIMENTAL SUBJECT'S BILL OF RIGHTS";
+    const sectionAlreadyHasHeading = currentSection === 'bill_of_rights';
     for (const line of text.split('\n').filter(Boolean)) {
+      // Skip duplicate Bill of Rights heading inside clause text if section heading already rendered
+      if (sectionAlreadyHasHeading && line.trim().toUpperCase() === billOfRightsHeading) {
+        continue;
+      }
       children.push(bodyParagraph(line));
     }
   }
