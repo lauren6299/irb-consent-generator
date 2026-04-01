@@ -303,10 +303,25 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                   </div>
                 );
               })}
+              {/* Purpose enrollment block – rendered after purpose clauses */}
+              {section === 'purpose' && (
+                <div className="clause-required">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Badge variant="outline" className="text-[10px] gap-1 border-amber-500/30 text-amber-600">
+                      <PenLine className="h-3 w-3" /> Required editable language
+                    </Badge>
+                  </div>
+                  <Textarea
+                    className="text-sm leading-relaxed min-h-[100px] bg-background"
+                    value={purposeEnrollmentText}
+                    onChange={(e) => onPurposeEnrollmentTextChange?.(e.target.value)}
+                    disabled={!onPurposeEnrollmentTextChange}
+                    placeholder="This research study is looking for [state number] of people with [disease or condition]..."
+                  />
+                </div>
+              )}
             </div>
           </div>
-        );
-      })}
 
       <div className="pt-6 border-t mt-8">
         <p className="text-xs text-muted-foreground italic text-center">

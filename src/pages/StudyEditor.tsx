@@ -337,6 +337,8 @@ export default function StudyEditor() {
                 includeSummary={answers.federally_supported ? true : answers.include_summary}
                 conciseSummaryText={answers.concise_summary_text}
                 onConciseSummaryTextChange={(text) => setAnswers({ ...answers, concise_summary_text: text })}
+                purposeEnrollmentText={answers.purpose_enrollment_text}
+                onPurposeEnrollmentTextChange={(text) => setAnswers({ ...answers, purpose_enrollment_text: text })}
               />
             </div>
           </ScrollArea>
