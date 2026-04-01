@@ -376,7 +376,6 @@ function buildAdultChildParticipationBox(): Paragraph[] {
     new Paragraph({ spacing: { after: 240 }, children: [] }),
   ];
 }
-}
 
 // ---------------------------------------------------------------------------
 // Stanford IRB repeating page header (table-based)
