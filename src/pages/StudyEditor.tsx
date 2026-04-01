@@ -95,6 +95,15 @@ export default function StudyEditor() {
 
   const assembled = useMemo(() => assembleConsentForm(clauses, answers), [clauses, answers]);
   const missingFields = useMemo(() => getMissingRequiredFields(answers), [answers]);
+  const documentMode = useMemo(() => getDocumentSubjectMode(answers), [answers]);
+
+  // Warn about clauses missing child_only_text in child_only mode
+  const childOnlyWarnings = useMemo(() => {
+    if (documentMode !== 'child_only') return [];
+    return assembled
+      .filter((c: any) => !c.child_only_text && c.required_level !== 'optional')
+      .map((c: any) => c.clause_key);
+  }, [assembled, documentMode]);
 
   const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
     setClauseEdits(newEdits);
