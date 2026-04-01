@@ -11,6 +11,12 @@ import {
   BorderStyle,
   TabStopType,
   TabStopPosition,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  VerticalAlign,
+  ShadingType,
 } from 'docx';
 import { saveAs } from 'file-saver';
 import type { ClauseEdits } from '@/components/ConsentPreview';
