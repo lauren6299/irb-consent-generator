@@ -111,7 +111,14 @@ export default function StudyEditor() {
       .map((c: any) => c.clause_key);
   }, [assembled, documentMode]);
 
-  const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
+  // Warn about incomplete protocol director contact info
+  const protocolDirectorWarning = useMemo(() => {
+    if (!study.pi_name || !study.pi_address || !study.pi_phone) {
+      return 'Protocol Director contact information is incomplete in Study Setup and will remain as fill-in prompts in the exported template.';
+    }
+    return null;
+  }, [study.pi_name, study.pi_address, study.pi_phone]);
+
     setClauseEdits(newEdits);
   }, []);
 
