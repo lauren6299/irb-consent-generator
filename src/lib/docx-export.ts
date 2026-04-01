@@ -712,9 +712,35 @@ export async function generateConsentDocx(
     (c) => !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION && !SUPPRESSED_EXPORT_KEYS.has(c.clause_key)
   );
 
+  let futureUseInjected = false;
+  const shouldInjectFutureUse = !!(answers?.collects_specimens);
+
+  /** Inject the "Future Use of Private Information and/or Specimens" verbatim block */
+  function injectFutureUseBlock() {
+    if (futureUseInjected || !shouldInjectFutureUse) return;
+    futureUseInjected = true;
+    children.push(subHeading('Future Use of Private Information and/or Specimens'));
+    children.push(bodyParagraph(
+      'Research using private information and/or specimens is an important way to try to understand human disease. You are being given this information because the investigators want to save private information and/or specimens for future research.'
+    ));
+    if (answers?.future_research_use_allowed) {
+      children.push(bodyParagraph(
+        'Identifiers might be removed from identifiable private information and/or identifiable specimens and, after such removal, the information and/or specimens could be used for future research studies or distributed to another investigator for future research studies without additional informed consent from you.'
+      ));
+    } else {
+      children.push(bodyParagraph(
+        'Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.'
+      ));
+    }
+  }
+
   for (const clause of bodyClauses) {
     // Section heading
     if (clause.section !== currentSection) {
+      // Before leaving the procedures section, inject Future Use block if not yet done
+      if (currentSection === 'procedures') {
+        injectFutureUseBlock();
+      }
       // Before leaving the purpose section, inject enrollment text
       if (currentSection === 'purpose' && answers?.purpose_enrollment_text) {
         const enrollText = answers.purpose_enrollment_text as string;
@@ -735,10 +761,19 @@ export async function generateConsentDocx(
     // Anchor sub-heading
     const anchor = clause.insertion_anchor ?? '';
     if (anchor && anchor !== currentAnchor) {
+      // When transitioning past procedures_main, inject Future Use before other anchors
+      if (currentSection === 'procedures' && currentAnchor === 'procedures_main' && anchor !== 'procedures_main') {
+        injectFutureUseBlock();
+      }
       currentAnchor = anchor;
-      const anchorHeading = ANCHOR_HEADING_MAP[anchor];
-      if (anchorHeading) {
-        children.push(subHeading(anchorHeading));
+      // Skip the future_use anchor heading if we already injected it
+      if (anchor === 'future_use_of_information_and_specimens' && futureUseInjected) {
+        // Already rendered — skip the anchor heading
+      } else {
+        const anchorHeading = ANCHOR_HEADING_MAP[anchor];
+        if (anchorHeading) {
+          children.push(subHeading(anchorHeading));
+        }
       }
     }
 
