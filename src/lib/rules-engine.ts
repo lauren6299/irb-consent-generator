@@ -187,7 +187,11 @@ function assembleFromData(
   clauses: Clause[],
   answers: Record<string, unknown>
 ): AssembledClause[] {
-  return runAssembly(clauses, answers).map(({ _clause, ...rest }) => rest);
+  const mode = getDocumentSubjectMode(answers as Partial<StudyAnswers>);
+  return runAssembly(clauses, answers).map(({ _clause, ...rest }) => ({
+    ...rest,
+    clause_text: resolveClauseTextVariant(_clause, mode),
+  }));
 }
 
 export function getMissingRequiredFields(answers: StudyAnswers): string[] {

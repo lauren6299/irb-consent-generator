@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import StudySetupForm from '@/components/StudySetupForm';
 import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
 import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
-import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS } from '@/lib/types';
+import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubjectMode } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
 import { generateConsentDocx } from '@/lib/docx-export';
 import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
