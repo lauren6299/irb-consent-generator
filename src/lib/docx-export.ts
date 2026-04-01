@@ -116,6 +116,9 @@ const SIGNATURE_SECTION = 'signatures';
 // ---------------------------------------------------------------------------
 
 const APPROVED_EDITABLE_PROMPTS = new Set([
+  '[protocol_director_name]',
+  '[protocol_director_address]',
+  '[protocol_director_phone]',
   '[study_topic]',
   '[study_goal]',
   '[selection_rationale]',
@@ -139,6 +142,20 @@ const APPROVED_EDITABLE_PROMPTS = new Set([
   '[payment_schedule]',
   '[appointment_contact_name]',
   '[appointment_contact_phone]',
+  '[participant_id_value]',
+  '[storage_method]',
+  '[linkage_method]',
+  '[genetic_testing_modal_verb]',
+  '[whole_genome_sequencing_choice]',
+  '[mri_scan_duration]',
+  '[disease_list]',
+  '[duration_after_last_dose]',
+  '[prior_recipients_n]',
+  '[long_term_followup_duration]',
+  '[autopsy_learning_goal]',
+  '[fda_product_name]',
+  '[sponsor_name]',
+  '[financial_relationship_disclosure_text]',
 ]);
 
 // ---------------------------------------------------------------------------
