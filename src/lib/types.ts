@@ -203,6 +203,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   future_contact_permission_requested: false,
   include_summary: true,
   concise_summary_text: '',
+  purpose_enrollment_text: 'This research study is looking for [state number] of people with [disease or condition]. [Clarify if enrollment will occur throughout the United States or internationally.] Stanford University expects to enroll [state number] research study participants.',
   include_failure_follow_instructions_reason: false,
   include_unanticipated_circumstances_reason: false,
   use_no_participation_alternative: false,
