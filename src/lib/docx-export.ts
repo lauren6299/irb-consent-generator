@@ -513,6 +513,12 @@ export async function generateConsentDocx(
     }
   }
 
+  // ===== ADULT + CHILD PARTICIPATION BOX (conditional) =====
+  const needsAdultChildBox = !!(answers?.includes_adults && answers?.includes_children);
+  if (needsAdultChildBox) {
+    children.push(...buildAdultChildParticipationBox());
+  }
+
   // ===== RENDER BODY SECTIONS =====
   let currentSection = '';
   let currentAnchor = '';
