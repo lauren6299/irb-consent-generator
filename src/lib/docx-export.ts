@@ -118,9 +118,8 @@ const SIGNATURE_SECTION = 'signatures';
 // ---------------------------------------------------------------------------
 
 const APPROVED_EDITABLE_PROMPTS = new Set([
-  '[protocol_director_name]',
-  '[protocol_director_address]',
-  '[protocol_director_phone]',
+  // NOTE: [protocol_director_name], [protocol_director_address], [protocol_director_phone]
+  // are NOT listed here — they are globally bound from Study Setup and auto-substituted.
   '[study_topic]',
   '[study_goal]',
   '[selection_rationale]',
