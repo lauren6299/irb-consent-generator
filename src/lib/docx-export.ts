@@ -17,6 +17,7 @@ import {
   WidthType,
   VerticalAlign,
   ShadingType,
+  LevelFormat,
 } from 'docx';
 import { saveAs } from 'file-saver';
 import type { ClauseEdits } from '@/components/ConsentPreview';
