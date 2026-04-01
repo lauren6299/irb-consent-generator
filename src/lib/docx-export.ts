@@ -409,44 +409,13 @@ export async function generateConsentDocx(
     throw new Error(`Unresolved placeholders: ${unresolved.join(', ')}`);
   }
 
+  // Filter out header-only clause keys from the entire clause set
+  const exportClauses = clauses.filter((c) => !HEADER_ONLY_CLAUSE_KEYS.has(c.clause_key));
+
   const children: Paragraph[] = [];
 
-  // ===== TITLE AREA =====
+  // ===== TITLE AREA (participant-facing consent title only — NO protocol metadata) =====
   children.push(
-    new Paragraph({
-      children: [new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, size: TITLE_SIZE, font: HEADING_FONT })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 100 },
-    }),
-    new Paragraph({
-      children: [new TextRun({ text: 'Research Consent Form', bold: true, size: 28, font: HEADING_FONT })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 360 },
-    }),
-  );
-
-  // Metadata
-  const metaLines: [string, string][] = [
-    ['Protocol Title:', study.title || '[TBD]'],
-    ['Protocol Number:', study.protocol_number || '[TBD]'],
-    ['Principal Investigator:', study.pi_name || '[TBD]'],
-    ['Sponsor:', study.sponsor || '[TBD]'],
-  ];
-  for (const [label, value] of metaLines) {
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({ text: `${label}  `, bold: true, font: BODY_FONT, size: BODY_SIZE }),
-          new TextRun({ text: value, font: BODY_FONT, size: BODY_SIZE }),
-        ],
-        spacing: { after: 80 },
-      })
-    );
-  }
-
-  // Institutional title block
-  children.push(
-    new Paragraph({ spacing: { before: 360 }, children: [] }),
     new Paragraph({
       children: [new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, size: 28, font: HEADING_FONT })],
       alignment: AlignmentType.CENTER,
@@ -460,7 +429,7 @@ export async function generateConsentDocx(
   );
 
   // ===== RENDER INTRO SECTIONS (header, summary) as body text =====
-  const introClauses = clauses.filter((c) => INTRO_SECTIONS.has(c.section));
+  const introClauses = exportClauses.filter((c) => INTRO_SECTIONS.has(c.section));
   for (const clause of introClauses) {
     const text = resolveClauseText(clause, study, clauseEdits);
     for (const line of text.split('\n').filter(Boolean)) {
