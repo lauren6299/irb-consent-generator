@@ -160,6 +160,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   required_visit_schedule_text: '',
   optional_followup_text: '',
   specimens: '',
+  specimen_storage_mode: '',
   collects_specimens: false,
   specimens_unlinked: false,
   specimens_sent_outside_stanford: false,
