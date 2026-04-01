@@ -451,7 +451,8 @@ function resolveClauseText(clause: ExportClause, study: StudyInfo, clauseEdits?:
 export async function generateConsentDocx(
   study: StudyInfo,
   clauses: ExportClause[],
-  clauseEdits?: ClauseEdits
+  clauseEdits?: ClauseEdits,
+  answers?: Partial<StudyAnswers>
 ) {
   // --- Validate required header fields ---
   if (!study.pi_name || !study.title) {
