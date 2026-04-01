@@ -102,6 +102,9 @@ export interface StudyAnswers {
   include_summary: boolean;
   concise_summary_text: string;
 
+  // Purpose
+  purpose_enrollment_text: string;
+
   // Optional Inclusion Controls
   include_failure_follow_instructions_reason: boolean;
   include_unanticipated_circumstances_reason: boolean;
