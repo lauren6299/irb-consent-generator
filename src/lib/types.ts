@@ -90,6 +90,9 @@ export interface StudyAnswers {
 
   // Site Config
   site_requires_participant_id_on_each_page: boolean;
+  participant_id_value: string;
+  use_alternate_page_identification_method: boolean;
+  keep_blank_box_for_label_cover: boolean;
 
   // Contacts
   include_appointment_contact: boolean;
