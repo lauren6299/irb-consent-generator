@@ -705,8 +705,11 @@ export async function generateConsentDocx(
   let currentSection = '';
   let currentAnchor = '';
 
+  /** Clause keys replaced by dedicated editable fields – suppress from export */
+  const SUPPRESSED_EXPORT_KEYS = new Set(['enrollment_statement']);
+
   const bodyClauses = exportClauses.filter(
-    (c) => !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION
+    (c) => !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION && !SUPPRESSED_EXPORT_KEYS.has(c.clause_key)
   );
 
   for (const clause of bodyClauses) {
