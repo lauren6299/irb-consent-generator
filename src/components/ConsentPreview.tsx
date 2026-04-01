@@ -245,16 +245,40 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                     {/* Clause body */}
                     {clause.content_type === 'free_text' ? (
                       /* free_text → full editing */
-                      <Textarea
-                        className="text-sm leading-relaxed min-h-[80px] bg-background"
-                        value={
-                          clauseEdits?.full_text !== undefined
-                            ? clauseEdits.full_text
-                            : replacePlaceholders(clause.clause_text, study)
-                        }
-                        onChange={(e) => updateEdit(clause.clause_key, { full_text: e.target.value })}
-                        disabled={!onEditChange}
-                      />
+                      <>
+                        <Textarea
+                          className="text-sm leading-relaxed min-h-[80px] bg-background"
+                          value={
+                            clauseEdits?.full_text !== undefined
+                              ? clauseEdits.full_text
+                              : replacePlaceholders(clause.clause_text, study)
+                          }
+                          onChange={(e) => updateEdit(clause.clause_key, { full_text: e.target.value })}
+                          disabled={!onEditChange}
+                        />
+                        {/* Procedures helper guidance – anchored directly under the first free_text box */}
+                        {section === 'procedures' && (
+                          <details className="mt-2 rounded-md border border-muted p-3 bg-muted/30">
+                            <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
+                              Drafting Guidance (not included in export)
+                            </summary>
+                            <div className="mt-2 space-y-2">
+                              <p className="text-xs text-muted-foreground leading-relaxed">
+                                Describe study procedures in plain language. Use a clear, step-by-step or chronological format. Consider including a schedule, chart, or visuals if helpful. Define all medical terms and avoid acronyms when possible.
+                              </p>
+                              <p className="text-xs font-medium text-muted-foreground">Include, as applicable:</p>
+                              <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
+                                <li>What is experimental in the study</li>
+                                <li>The purpose of each procedure</li>
+                                <li>How often procedures occur and how long they take</li>
+                                <li>Any invasive procedures</li>
+                                <li>Contraception requirements, if relevant</li>
+                                <li>Details of samples collected (type, frequency, and amount), expressed in simple terms (e.g., tablespoons of blood)</li>
+                              </ul>
+                            </div>
+                          </details>
+                        )}
+                      </>
                     ) : (
                       <>
                         {/* Rendered text with placeholders replaced */}
@@ -322,28 +346,6 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                     placeholder="This research study is looking for [state number] of people with [disease or condition]..."
                   />
                 </div>
-              )}
-              {/* Procedures helper guidance – editor only, never exported */}
-              {section === 'procedures' && (
-                <details className="rounded-md border border-muted p-3 bg-muted/30">
-                  <summary className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">
-                    Drafting Guidance (not included in export)
-                  </summary>
-                  <div className="mt-2 space-y-2">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Describe study procedures in plain language. Use a clear, step-by-step or chronological format. Consider including a schedule, chart, or visuals if helpful. Define all medical terms and avoid acronyms when possible.
-                    </p>
-                    <p className="text-xs font-medium text-muted-foreground">Include, as applicable:</p>
-                    <ul className="list-disc pl-5 text-xs text-muted-foreground leading-relaxed space-y-0.5">
-                      <li>What is experimental in the study</li>
-                      <li>The purpose of each procedure</li>
-                      <li>How often procedures occur and how long they take</li>
-                      <li>Any invasive procedures</li>
-                      <li>Contraception requirements, if relevant</li>
-                      <li>Details of samples collected (type, frequency, and amount), expressed in simple terms (e.g., tablespoons of blood)</li>
-                    </ul>
-                  </div>
-                </details>
               )}
             </div>
           </div>
