@@ -532,12 +532,6 @@ export async function generateConsentDocx(
     throw new Error(`Disallowed internal tokens found: ${disallowedTokens.join(', ')}`);
   }
 
-  // --- Validate adult/child participation box ---
-  const needsAdultChildBox = !!(answers?.includes_adults && answers?.includes_children);
-  if (needsAdultChildBox) {
-    // Box will be rendered below — this just validates the condition is met
-  }
-
   // --- Guardrail: detect duplicate header content leaking into body ---
   const HEADER_BODY_FORBIDDEN = [
     'STANFORD UNIVERSITY Research Consent Form',
