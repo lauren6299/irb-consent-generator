@@ -56,6 +56,8 @@ interface Props {
   includeSummary?: boolean;
   conciseSummaryText?: string;
   onConciseSummaryTextChange?: (text: string) => void;
+  purposeEnrollmentText?: string;
+  onPurposeEnrollmentTextChange?: (text: string) => void;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
@@ -108,7 +110,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
   );
 }
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section);
     return acc;
@@ -301,6 +303,23 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                   </div>
                 );
               })}
+              {/* Purpose enrollment block – rendered after purpose clauses */}
+              {section === 'purpose' && (
+                <div className="clause-required">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Badge variant="outline" className={`text-[10px] gap-1 ${CONTENT_TYPE_LABELS.required_editable.className}`}>
+                      <PenLine className="h-3 w-3" /> {CONTENT_TYPE_LABELS.required_editable.label}
+                    </Badge>
+                  </div>
+                  <Textarea
+                    className="text-sm leading-relaxed min-h-[100px] bg-background"
+                    value={purposeEnrollmentText}
+                    onChange={(e) => onPurposeEnrollmentTextChange?.(e.target.value)}
+                    disabled={!onPurposeEnrollmentTextChange}
+                    placeholder="This research study is looking for [state number] of people with [disease or condition]..."
+                  />
+                </div>
+              )}
             </div>
           </div>
         );
