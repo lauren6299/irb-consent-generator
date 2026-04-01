@@ -617,7 +617,11 @@ export async function generateConsentDocx(
     }
   }
 
-  // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
+  // --- Validate Concise Summary for federally supported studies ---
+  const effectiveIncludeSummary = answers?.federally_supported ? true : (answers?.include_summary ?? true);
+  if (answers?.federally_supported && answers?.include_summary === false) {
+    throw new Error('Concise Summary is required for federally supported studies');
+  }
   const disallowedTokens = findUnresolvedPlaceholders(clauses, study, clauseEdits);
   if (disallowedTokens.length > 0) {
     throw new Error(`Disallowed internal tokens found: ${disallowedTokens.join(', ')}`);
