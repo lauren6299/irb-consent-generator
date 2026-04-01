@@ -208,6 +208,17 @@ export default function StudyEditor() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            {documentMode === 'child_only' && (
+              <Badge variant="outline" className="gap-1 text-blue-600 border-blue-500/30">
+                Child-Only Mode
+              </Badge>
+            )}
+            {childOnlyWarnings.length > 0 && (
+              <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30">
+                <AlertTriangle className="h-3 w-3" />
+                {childOnlyWarnings.length} clauses using default text
+              </Badge>
+            )}
             {missingFields.length > 0 && (
               <Badge variant="outline" className="gap-1 text-warning border-warning/30">
                 <AlertTriangle className="h-3 w-3" />
