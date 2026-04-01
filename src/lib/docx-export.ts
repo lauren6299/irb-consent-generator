@@ -20,7 +20,7 @@ import {
 } from 'docx';
 import { saveAs } from 'file-saver';
 import type { ClauseEdits } from '@/components/ConsentPreview';
-import { SECTION_ORDER, ANCHOR_ORDER } from './types';
+import { SECTION_ORDER, ANCHOR_ORDER, StudyAnswers } from './types';
 
 // ---------------------------------------------------------------------------
 // Types
