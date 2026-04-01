@@ -441,10 +441,10 @@ export async function generateConsentDocx(
     throw new Error('Protocol Title and Protocol Director are required for the Stanford repeating header');
   }
 
-  // --- Validate placeholders ---
-  const unresolved = findUnresolvedPlaceholders(clauses, study, clauseEdits);
-  if (unresolved.length > 0) {
-    throw new Error(`Unresolved placeholders: ${unresolved.join(', ')}`);
+  // --- Validate disallowed internal tokens (approved editable prompts are allowed) ---
+  const disallowedTokens = findUnresolvedPlaceholders(clauses, study, clauseEdits);
+  if (disallowedTokens.length > 0) {
+    throw new Error(`Disallowed internal tokens found: ${disallowedTokens.join(', ')}`);
   }
 
   // --- Guardrail: detect duplicate header content leaking into body ---
