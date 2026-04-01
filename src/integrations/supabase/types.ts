@@ -149,7 +149,9 @@ export type Database = {
           contact_phone: string | null
           created_at: string
           id: string
+          pi_address: string | null
           pi_name: string | null
+          pi_phone: string | null
           protocol_number: string | null
           short_title: string | null
           sponsor: string | null
@@ -165,7 +167,9 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           id?: string
+          pi_address?: string | null
           pi_name?: string | null
+          pi_phone?: string | null
           protocol_number?: string | null
           short_title?: string | null
           sponsor?: string | null
@@ -181,7 +185,9 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string
           id?: string
+          pi_address?: string | null
           pi_name?: string | null
+          pi_phone?: string | null
           protocol_number?: string | null
           short_title?: string | null
           sponsor?: string | null
