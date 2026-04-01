@@ -91,7 +91,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
   );
 }
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section);
     return acc;
