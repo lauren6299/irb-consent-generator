@@ -98,6 +98,9 @@ export interface StudyAnswers {
   include_appointment_contact: boolean;
   future_contact_permission_requested: boolean;
 
+  // Concise Summary
+  include_summary: boolean;
+
   // Optional Inclusion Controls
   include_failure_follow_instructions_reason: boolean;
   include_unanticipated_circumstances_reason: boolean;
