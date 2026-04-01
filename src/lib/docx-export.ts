@@ -788,7 +788,7 @@ export async function generateConsentDocx(
         properties: {
           page: {
             size: { width: 12240, height: 15840 },
-            margin: { top: 2160, right: 1440, bottom: 1440, left: 1440 },
+            margin: { top: 2160, right: 1440, bottom: answers?.site_requires_participant_id_on_each_page ? 1800 : 1440, left: 1440 },
           },
         },
         headers: {
