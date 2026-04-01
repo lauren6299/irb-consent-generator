@@ -58,6 +58,8 @@ interface Props {
   onConciseSummaryTextChange?: (text: string) => void;
   purposeEnrollmentText?: string;
   onPurposeEnrollmentTextChange?: (text: string) => void;
+  collectsSpecimens?: boolean;
+  futureResearchUseAllowed?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
