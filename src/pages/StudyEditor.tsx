@@ -165,16 +165,8 @@ export default function StudyEditor() {
       return;
     }
 
-    // Check for unresolved placeholders
-    const unresolved = findUnresolvedPlaceholders(assembled, study, clauseEdits);
-    if (unresolved.length > 0) {
-      toast({
-        variant: 'destructive',
-        title: 'Unresolved Placeholders',
-        description: `The following fields must be filled before export: ${unresolved.join(', ')}`,
-      });
-      return;
-    }
+    // Note: editable prompts like [study_topic] are allowed to remain in the exported .docx.
+    // The export function itself validates that no disallowed internal tokens remain.
 
     try {
       const { fileName } = await generateConsentDocx(study, assembled, clauseEdits);

@@ -112,6 +112,36 @@ const HEADER_ONLY_CLAUSE_KEYS = new Set([
 const SIGNATURE_SECTION = 'signatures';
 
 // ---------------------------------------------------------------------------
+// Approved editable prompts – allowed to remain in exported .docx
+// ---------------------------------------------------------------------------
+
+const APPROVED_EDITABLE_PROMPTS = new Set([
+  '[study_topic]',
+  '[study_goal]',
+  '[selection_rationale]',
+  '[target_population]',
+  '[stanford_n]',
+  '[total_n]',
+  '[enrollment_geography]',
+  '[duration]',
+  '[active_duration]',
+  '[followup_duration]',
+  '[washout_description]',
+  '[procedure_narrative]',
+  '[withdrawal_contact_name]',
+  '[withdrawal_contact_phone]',
+  '[withdrawal_procedure_text]',
+  '[investigator_withdrawal_reasons_text]',
+  '[risk_narrative]',
+  '[benefit_narrative]',
+  '[alternatives_narrative]',
+  '[payment_amount_and_method]',
+  '[payment_schedule]',
+  '[appointment_contact_name]',
+  '[appointment_contact_phone]',
+]);
+
+// ---------------------------------------------------------------------------
 // Fonts & sizes (twips: 1pt = 2 twips)
 // ---------------------------------------------------------------------------
 
