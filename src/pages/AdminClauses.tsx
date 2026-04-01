@@ -25,6 +25,8 @@ interface Clause {
   section: string;
   subsection: string;
   clause_text: string;
+  child_only_text: string | null;
+  mixed_population_text: string | null;
   content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack' | 'structured_block';
   required_level: 'required' | 'conditional' | 'optional';
   trigger_expression: any;
@@ -41,6 +43,8 @@ const EMPTY_CLAUSE: Omit<Clause, 'id'> = {
   section: CONSENT_SECTIONS[0],
   subsection: '',
   clause_text: '',
+  child_only_text: null,
+  mixed_population_text: null,
   content_type: 'locked',
   required_level: 'required',
   trigger_expression: {},
@@ -141,6 +145,8 @@ export default function AdminClauses() {
       section: source.section,
       subsection: source.subsection,
       clause_text: source.clause_text,
+      child_only_text: source.child_only_text,
+      mixed_population_text: source.mixed_population_text,
       content_type: source.content_type,
       required_level: source.required_level,
       trigger_expression: source.trigger_expression,
@@ -290,6 +296,11 @@ export default function AdminClauses() {
                             <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5 max-w-xs">
                               {clause.clause_text.slice(0, 80)}…
                             </p>
+                            {clause.child_only_text && (
+                              <Badge variant="outline" className="text-[9px] mt-0.5 gap-0.5 border-blue-500/30 text-blue-600">
+                                Child variant
+                              </Badge>
+                            )}
                           </TableCell>
                           <TableCell>
                             <span className="text-xs">{clause.section}</span>
@@ -385,8 +396,28 @@ export default function AdminClauses() {
                   <Input value={form.subsection} onChange={(e) => setForm({ ...form, subsection: e.target.value })} placeholder="Optional subsection" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Clause Text</Label>
+                  <Label className="text-xs">Clause Text (Default / Adult)</Label>
                   <Textarea value={form.clause_text} onChange={(e) => setForm({ ...form, clause_text: e.target.value })} rows={6} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Child-Only Text <span className="text-muted-foreground">(optional)</span></Label>
+                  <Textarea
+                    value={form.child_only_text ?? ''}
+                    onChange={(e) => setForm({ ...form, child_only_text: e.target.value || null })}
+                    rows={4}
+                    placeholder="Alternate wording for child-only studies. Leave empty to use default text."
+                    className="border-blue-500/20 focus-visible:ring-blue-500/30"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Mixed Population Text <span className="text-muted-foreground">(optional, future use)</span></Label>
+                  <Textarea
+                    value={form.mixed_population_text ?? ''}
+                    onChange={(e) => setForm({ ...form, mixed_population_text: e.target.value || null })}
+                    rows={3}
+                    placeholder="Alternate wording for mixed adult+child studies. Reserved for future use."
+                    className="border-muted"
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-1.5">

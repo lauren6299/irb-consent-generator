@@ -101,6 +101,32 @@ export interface StudyAnswers {
   use_no_participation_alternative: boolean;
 }
 
+// ---------------------------------------------------------------------------
+// Document subject mode – determines which clause text variant to render
+// ---------------------------------------------------------------------------
+
+export type DocumentSubjectMode = 'default' | 'child_only';
+
+export function getDocumentSubjectMode(answers: Partial<StudyAnswers>): DocumentSubjectMode {
+  if (answers.population_children && !answers.population_adults) {
+    return 'child_only';
+  }
+  return 'default';
+}
+
+/**
+ * Resolve the correct text variant for a clause based on document subject mode.
+ */
+export function resolveClauseTextVariant(
+  clause: { clause_text: string; child_only_text?: string | null; mixed_population_text?: string | null },
+  mode: DocumentSubjectMode
+): string {
+  if (mode === 'child_only' && clause.child_only_text) {
+    return clause.child_only_text;
+  }
+  return clause.clause_text;
+}
+
 export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   population_adults: false,
   population_children: false,

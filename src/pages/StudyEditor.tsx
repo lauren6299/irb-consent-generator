@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import StudySetupForm from '@/components/StudySetupForm';
 import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
 import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
-import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS } from '@/lib/types';
+import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubjectMode } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
 import { generateConsentDocx } from '@/lib/docx-export';
 import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
@@ -95,6 +95,15 @@ export default function StudyEditor() {
 
   const assembled = useMemo(() => assembleConsentForm(clauses, answers), [clauses, answers]);
   const missingFields = useMemo(() => getMissingRequiredFields(answers), [answers]);
+  const documentMode = useMemo(() => getDocumentSubjectMode(answers), [answers]);
+
+  // Warn about clauses missing child_only_text in child_only mode
+  const childOnlyWarnings = useMemo(() => {
+    if (documentMode !== 'child_only') return [];
+    return assembled
+      .filter((c: any) => !c.child_only_text && c.required_level !== 'optional')
+      .map((c: any) => c.clause_key);
+  }, [assembled, documentMode]);
 
   const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
     setClauseEdits(newEdits);
@@ -199,6 +208,17 @@ export default function StudyEditor() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            {documentMode === 'child_only' && (
+              <Badge variant="outline" className="gap-1 text-blue-600 border-blue-500/30">
+                Child-Only Mode
+              </Badge>
+            )}
+            {childOnlyWarnings.length > 0 && (
+              <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30">
+                <AlertTriangle className="h-3 w-3" />
+                {childOnlyWarnings.length} clauses using default text
+              </Badge>
+            )}
             {missingFields.length > 0 && (
               <Badge variant="outline" className="gap-1 text-warning border-warning/30">
                 <AlertTriangle className="h-3 w-3" />

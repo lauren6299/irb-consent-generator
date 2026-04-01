@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { StudyAnswers, SECTION_ORDER, ANCHOR_ORDER } from './types';
+import { StudyAnswers, SECTION_ORDER, ANCHOR_ORDER, getDocumentSubjectMode, resolveClauseTextVariant } from './types';
 
 interface Clause {
   id: string;
@@ -7,6 +7,8 @@ interface Clause {
   section: string;
   subsection: string;
   clause_text: string;
+  child_only_text?: string | null;
+  mixed_population_text?: string | null;
   content_type: 'locked' | 'required_editable' | 'free_text' | 'conditional_pack' | 'structured_block';
   required_level: 'required' | 'conditional' | 'optional';
   trigger_expression: Record<string, unknown> | null;
@@ -104,11 +106,16 @@ export function assembleConsentForm(
   answers: StudyAnswers
 ): IncludedClause[] {
   const answersMap = answers as unknown as Record<string, unknown>;
+  const mode = getDocumentSubjectMode(answers);
   const result = runAssembly(clauses, answersMap);
-  return result.map((r) => ({
-    ...(r._clause as Clause),
-    inclusion_reason: r.inclusion_reason,
-  }));
+  return result.map((r) => {
+    const resolved = resolveClauseTextVariant(r._clause, mode);
+    return {
+      ...(r._clause as Clause),
+      clause_text: resolved,
+      inclusion_reason: r.inclusion_reason,
+    };
+  });
 }
 
 // Shared core assembly logic
@@ -180,7 +187,11 @@ function assembleFromData(
   clauses: Clause[],
   answers: Record<string, unknown>
 ): AssembledClause[] {
-  return runAssembly(clauses, answers).map(({ _clause, ...rest }) => rest);
+  const mode = getDocumentSubjectMode(answers as Partial<StudyAnswers>);
+  return runAssembly(clauses, answers).map(({ _clause, ...rest }) => ({
+    ...rest,
+    clause_text: resolveClauseTextVariant(_clause, mode),
+  }));
 }
 
 export function getMissingRequiredFields(answers: StudyAnswers): string[] {
