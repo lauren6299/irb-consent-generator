@@ -307,8 +307,8 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               {section === 'purpose' && (
                 <div className="clause-required">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <Badge variant="outline" className="text-[10px] gap-1 border-amber-500/30 text-amber-600">
-                      <PenLine className="h-3 w-3" /> Required editable language
+                    <Badge variant="outline" className={`text-[10px] gap-1 ${CONTENT_TYPE_LABELS.required_editable.className}`}>
+                      <PenLine className="h-3 w-3" /> {CONTENT_TYPE_LABELS.required_editable.label}
                     </Badge>
                   </div>
                   <Textarea
