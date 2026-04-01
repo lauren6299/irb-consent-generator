@@ -409,6 +409,26 @@ export async function generateConsentDocx(
     throw new Error(`Unresolved placeholders: ${unresolved.join(', ')}`);
   }
 
+  // --- Guardrail: detect duplicate header content leaking into body ---
+  const HEADER_BODY_FORBIDDEN = [
+    'STANFORD UNIVERSITY Research Consent Form',
+    'Protocol Title:',
+    'Protocol Number:',
+    'Principal Investigator:',
+    'Sponsor:',
+  ];
+  const bodyOnlyClauses = clauses.filter(
+    (c) => !HEADER_ONLY_CLAUSE_KEYS.has(c.clause_key) && !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION
+  );
+  for (const clause of bodyOnlyClauses) {
+    const text = resolveClauseText(clause, study, clauseEdits);
+    for (const forbidden of HEADER_BODY_FORBIDDEN) {
+      if (text.includes(forbidden)) {
+        throw new Error('Duplicate header content detected in document body');
+      }
+    }
+  }
+
   // Filter out header-only clause keys from the entire clause set
   const exportClauses = clauses.filter((c) => !HEADER_ONLY_CLAUSE_KEYS.has(c.clause_key));
 
