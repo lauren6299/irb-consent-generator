@@ -96,6 +96,18 @@ const ANCHOR_HEADING_MAP: Record<string, string> = {
 /** Sections whose content is rendered in the title/intro area, not as a headed section */
 const INTRO_SECTIONS = new Set(['header', 'summary']);
 
+/**
+ * Clause keys that are rendered ONLY in the repeating page header.
+ * These must never appear in the document body.
+ */
+const HEADER_ONLY_CLAUSE_KEYS = new Set([
+  'stanford_consent_title',
+  'study_metadata_block',
+  'protocol_title_block',
+  'sponsor_block',
+  'investigator_block',
+]);
+
 /** Sections rendered as signature blocks, not normal body text */
 const SIGNATURE_SECTION = 'signatures';
 
@@ -397,44 +409,33 @@ export async function generateConsentDocx(
     throw new Error(`Unresolved placeholders: ${unresolved.join(', ')}`);
   }
 
-  const children: Paragraph[] = [];
-
-  // ===== TITLE AREA =====
-  children.push(
-    new Paragraph({
-      children: [new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, size: TITLE_SIZE, font: HEADING_FONT })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 100 },
-    }),
-    new Paragraph({
-      children: [new TextRun({ text: 'Research Consent Form', bold: true, size: 28, font: HEADING_FONT })],
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 360 },
-    }),
-  );
-
-  // Metadata
-  const metaLines: [string, string][] = [
-    ['Protocol Title:', study.title || '[TBD]'],
-    ['Protocol Number:', study.protocol_number || '[TBD]'],
-    ['Principal Investigator:', study.pi_name || '[TBD]'],
-    ['Sponsor:', study.sponsor || '[TBD]'],
+  // --- Guardrail: detect duplicate header content leaking into body ---
+  const HEADER_BODY_FORBIDDEN = [
+    'STANFORD UNIVERSITY Research Consent Form',
+    'Protocol Title:',
+    'Protocol Number:',
+    'Principal Investigator:',
+    'Sponsor:',
   ];
-  for (const [label, value] of metaLines) {
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({ text: `${label}  `, bold: true, font: BODY_FONT, size: BODY_SIZE }),
-          new TextRun({ text: value, font: BODY_FONT, size: BODY_SIZE }),
-        ],
-        spacing: { after: 80 },
-      })
-    );
+  const bodyOnlyClauses = clauses.filter(
+    (c) => !HEADER_ONLY_CLAUSE_KEYS.has(c.clause_key) && !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION
+  );
+  for (const clause of bodyOnlyClauses) {
+    const text = resolveClauseText(clause, study, clauseEdits);
+    for (const forbidden of HEADER_BODY_FORBIDDEN) {
+      if (text.includes(forbidden)) {
+        throw new Error('Duplicate header content detected in document body');
+      }
+    }
   }
 
-  // Institutional title block
+  // Filter out header-only clause keys from the entire clause set
+  const exportClauses = clauses.filter((c) => !HEADER_ONLY_CLAUSE_KEYS.has(c.clause_key));
+
+  const children: Paragraph[] = [];
+
+  // ===== TITLE AREA (participant-facing consent title only — NO protocol metadata) =====
   children.push(
-    new Paragraph({ spacing: { before: 360 }, children: [] }),
     new Paragraph({
       children: [new TextRun({ text: 'STANFORD UNIVERSITY', bold: true, size: 28, font: HEADING_FONT })],
       alignment: AlignmentType.CENTER,
@@ -448,7 +449,7 @@ export async function generateConsentDocx(
   );
 
   // ===== RENDER INTRO SECTIONS (header, summary) as body text =====
-  const introClauses = clauses.filter((c) => INTRO_SECTIONS.has(c.section));
+  const introClauses = exportClauses.filter((c) => INTRO_SECTIONS.has(c.section));
   for (const clause of introClauses) {
     const text = resolveClauseText(clause, study, clauseEdits);
     for (const line of text.split('\n').filter(Boolean)) {
@@ -460,7 +461,7 @@ export async function generateConsentDocx(
   let currentSection = '';
   let currentAnchor = '';
 
-  const bodyClauses = clauses.filter(
+  const bodyClauses = exportClauses.filter(
     (c) => !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION
   );
 
@@ -493,7 +494,7 @@ export async function generateConsentDocx(
   }
 
   // ===== SIGNATURE BLOCKS =====
-  const sigClauses = clauses.filter((c) => c.section === SIGNATURE_SECTION);
+  const sigClauses = exportClauses.filter((c) => c.section === SIGNATURE_SECTION);
   if (sigClauses.length > 0) {
     children.push(new Paragraph({ spacing: { before: 480 }, children: [] }));
 
