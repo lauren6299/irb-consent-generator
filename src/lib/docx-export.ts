@@ -441,7 +441,7 @@ export async function generateConsentDocx(
   let currentSection = '';
   let currentAnchor = '';
 
-  const bodyClauses = clauses.filter(
+  const bodyClauses = exportClauses.filter(
     (c) => !INTRO_SECTIONS.has(c.section) && c.section !== SIGNATURE_SECTION
   );
 
