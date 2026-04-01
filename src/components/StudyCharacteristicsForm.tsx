@@ -323,6 +323,24 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
         ]} />
       </Section>
 
+      {/* Concise Summary */}
+      <Section title="Concise Summary">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="include_summary" className="text-sm">Include Concise Summary</Label>
+            <Switch
+              id="include_summary"
+              checked={answers.federally_supported ? true : answers.include_summary}
+              disabled={answers.federally_supported}
+              onCheckedChange={() => onChange({ ...answers, include_summary: !answers.include_summary })}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Concise Summary is required for federally supported studies and recommended for all studies.
+          </p>
+        </div>
+      </Section>
+
       {/* Optional Inclusion Controls */}
       <Section title="Optional Inclusion Controls">
         <ToggleRow answers={answers} onChange={onChange} items={[
