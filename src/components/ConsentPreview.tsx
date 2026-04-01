@@ -150,6 +150,35 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
         </div>
       )}
 
+      {/* Concise Summary (locked structured block) */}
+      {includeSummary && (
+        <div id="section-summary" className="space-y-3">
+          <h3 className="font-heading text-base font-bold border-b border-primary/20 pb-1 mb-3">
+            CONCISE SUMMARY
+          </h3>
+          <p className="text-sm leading-relaxed">
+            Use the bulleted list below to draft your key information as a concise summary, and insert that language into the beginning of the consent, just before the &quot;Purpose of the Research&quot; section:
+          </p>
+          <ul className="list-disc pl-5 text-sm leading-relaxed space-y-1">
+            <li>The fact that consent is being sought for research and that participation is voluntary;</li>
+            <li>The purpose(s) of the research, expected duration of the subject&apos;s participation, and the procedures to be followed in the research;</li>
+            <li>Reasonably foreseeable risks or discomforts;</li>
+            <li>Benefits to subjects or others that may be reasonably expected from the research; and</li>
+            <li>Appropriate alternative procedures or courses of treatment, if any that might be advantageous to the prospective subject.</li>
+          </ul>
+          <p className="text-sm leading-relaxed font-medium mt-3">Other topics to consider:</p>
+          <ul className="list-disc pl-5 text-sm leading-relaxed space-y-1">
+            <li>Most important reason why a participant would and would not want to participate.</li>
+            <li>How will they feel during the study?</li>
+            <li>What is the science?</li>
+            <li>What&apos;s the difference between being in the study, and being treated for their condition?</li>
+            <li>Will someone profit from the use of their samples or data? Will they?</li>
+            <li>What happens if they want to stop?</li>
+            <li>Have other people taken this drug/used this device? What happened to them?</li>
+          </ul>
+        </div>
+      )}
+
       {CONSENT_SECTIONS.map((section) => {
         const sectionClauses = grouped[section];
         if (!sectionClauses || sectionClauses.length === 0) return null;

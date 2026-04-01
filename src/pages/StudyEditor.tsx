@@ -334,6 +334,7 @@ export default function StudyEditor() {
                 edits={clauseEdits}
                 onEditChange={handleClauseEdits}
                 showAdultChildBox={!!(answers.population_adults && answers.includes_children)}
+                includeSummary={answers.federally_supported ? true : answers.include_summary}
               />
             </div>
           </ScrollArea>
