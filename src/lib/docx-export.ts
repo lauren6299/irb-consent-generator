@@ -799,17 +799,19 @@ export async function generateConsentDocx(
           }),
         },
         footers: {
-          default: new Footer({
-            children: [
-              new Paragraph({
+          default: answers?.site_requires_participant_id_on_each_page
+            ? buildParticipantIdFooter(answers)
+            : new Footer({
                 children: [
-                  new TextRun({ text: 'Page ', size: 16, font: HEADING_FONT }),
-                  new TextRun({ children: [PageNumber.CURRENT], size: 16, font: HEADING_FONT }),
+                  new Paragraph({
+                    children: [
+                      new TextRun({ text: 'Page ', size: 16, font: HEADING_FONT }),
+                      new TextRun({ children: [PageNumber.CURRENT], size: 16, font: HEADING_FONT }),
+                    ],
+                    alignment: AlignmentType.CENTER,
+                  }),
                 ],
-                alignment: AlignmentType.CENTER,
               }),
-            ],
-          }),
         },
         children,
       },
