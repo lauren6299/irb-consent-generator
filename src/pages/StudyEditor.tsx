@@ -289,7 +289,7 @@ export default function StudyEditor() {
                 study={study}
                 edits={clauseEdits}
                 onEditChange={handleClauseEdits}
-                showAdultChildBox={!!(answers.includes_adults && answers.includes_children)}
+                showAdultChildBox={!!(answers.population_adults && answers.includes_children)}
               />
             </div>
           </ScrollArea>
