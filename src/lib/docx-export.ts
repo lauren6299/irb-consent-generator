@@ -189,7 +189,11 @@ function substitutePlaceholders(
     .replace(/\[SPONSOR\]/g, study.sponsor || '')
     .replace(/\[CONTACT_NAME\]/g, study.contact_name || '')
     .replace(/\[CONTACT_PHONE\]/g, study.contact_phone || '')
-    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '');
+    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '')
+    // Global protocol director bindings from Study Setup
+    .replace(/\[protocol_director_name\]/gi, study.pi_name || '[protocol_director_name]')
+    .replace(/\[protocol_director_address\]/gi, study.pi_address || '[protocol_director_address]')
+    .replace(/\[protocol_director_phone\]/gi, study.pi_phone || '[protocol_director_phone]');
 
   if (fieldValues) {
     for (const [key, value] of Object.entries(fieldValues)) {

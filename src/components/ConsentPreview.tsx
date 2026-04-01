@@ -63,6 +63,13 @@ const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementTy
   structured_block: { label: 'Conditionally included', icon: GitBranch, className: 'border-blue-500/30 text-blue-600' },
 };
 
+/** Fields that are globally bound from Study Setup – hide from per-clause editing */
+const GLOBAL_BOUND_FIELDS = new Set([
+  'protocol_director_name',
+  'protocol_director_address',
+  'protocol_director_phone',
+]);
+
 function replacePlaceholders(text: string, study: StudyInfo, fieldValues?: Record<string, string>): string {
   let result = text
     .replace(/\[STUDY_TITLE\]/g, study.title || '[STUDY TITLE]')
@@ -72,7 +79,11 @@ function replacePlaceholders(text: string, study: StudyInfo, fieldValues?: Recor
     .replace(/\[SPONSOR\]/g, study.sponsor || '[SPONSOR]')
     .replace(/\[CONTACT_NAME\]/g, study.contact_name || '[CONTACT NAME]')
     .replace(/\[CONTACT_PHONE\]/g, study.contact_phone || '[CONTACT PHONE]')
-    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '[CONTACT EMAIL]');
+    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '[CONTACT EMAIL]')
+    // Global protocol director bindings from Study Setup
+    .replace(/\[protocol_director_name\]/gi, study.pi_name || '[protocol_director_name]')
+    .replace(/\[protocol_director_address\]/gi, study.pi_address || '[protocol_director_address]')
+    .replace(/\[protocol_director_phone\]/gi, study.pi_phone || '[protocol_director_phone]');
 
   // Replace custom field placeholders from editable_fields values
   if (fieldValues) {
