@@ -100,6 +100,7 @@ export interface StudyAnswers {
 
   // Concise Summary
   include_summary: boolean;
+  concise_summary_text: string;
 
   // Optional Inclusion Controls
   include_failure_follow_instructions_reason: boolean;
