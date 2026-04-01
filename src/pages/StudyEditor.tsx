@@ -18,6 +18,8 @@ interface StudyInfo {
   title: string;
   short_title: string;
   pi_name: string;
+  pi_address: string;
+  pi_phone: string;
   protocol_number: string;
   sponsor: string;
   contact_name: string;
@@ -30,6 +32,8 @@ const DEFAULT_STUDY_INFO: StudyInfo = {
   title: '',
   short_title: '',
   pi_name: '',
+  pi_address: '',
+  pi_phone: '',
   protocol_number: '',
   sponsor: '',
   contact_name: '',
@@ -72,6 +76,8 @@ export default function StudyEditor() {
           title: data.title,
           short_title: data.short_title ?? '',
           pi_name: data.pi_name ?? '',
+          pi_address: (data as any).pi_address ?? '',
+          pi_phone: (data as any).pi_phone ?? '',
           protocol_number: data.protocol_number ?? '',
           sponsor: data.sponsor ?? '',
           contact_name: data.contact_name ?? '',
@@ -105,6 +111,14 @@ export default function StudyEditor() {
       .map((c: any) => c.clause_key);
   }, [assembled, documentMode]);
 
+  // Warn about incomplete protocol director contact info
+  const protocolDirectorWarning = useMemo(() => {
+    if (!study.pi_name || !study.pi_address || !study.pi_phone) {
+      return 'Protocol Director contact information is incomplete in Study Setup and will remain as fill-in prompts in the exported template.';
+    }
+    return null;
+  }, [study.pi_name, study.pi_address, study.pi_phone]);
+
   const handleClauseEdits = useCallback((newEdits: ClauseEdits) => {
     setClauseEdits(newEdits);
   }, []);
@@ -124,12 +138,14 @@ export default function StudyEditor() {
           title: study.title,
           short_title: study.short_title,
           pi_name: study.pi_name,
+          pi_address: study.pi_address,
+          pi_phone: study.pi_phone,
           protocol_number: study.protocol_number,
           sponsor: study.sponsor,
           contact_name: study.contact_name,
           contact_phone: study.contact_phone,
           contact_email: study.contact_email,
-        }).eq('id', studyId);
+        } as any).eq('id', studyId);
 
         await supabase.from('study_answers').upsert({
           study_id: studyId,
@@ -141,12 +157,14 @@ export default function StudyEditor() {
           title: study.title,
           short_title: study.short_title,
           pi_name: study.pi_name,
+          pi_address: study.pi_address,
+          pi_phone: study.pi_phone,
           protocol_number: study.protocol_number,
           sponsor: study.sponsor,
           contact_name: study.contact_name,
           contact_phone: study.contact_phone,
           contact_email: study.contact_email,
-        }).select().single();
+        } as any).select().single();
 
         if (newStudy) {
           setStudyId(newStudy.id);
@@ -217,6 +235,12 @@ export default function StudyEditor() {
               <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30">
                 <AlertTriangle className="h-3 w-3" />
                 {childOnlyWarnings.length} clauses using default text
+              </Badge>
+            )}
+            {protocolDirectorWarning && (
+              <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30" title={protocolDirectorWarning}>
+                <AlertTriangle className="h-3 w-3" />
+                PI info incomplete
               </Badge>
             )}
             {missingFields.length > 0 && (

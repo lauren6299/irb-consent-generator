@@ -41,6 +41,8 @@ interface StudyInfo {
   title: string;
   short_title: string;
   pi_name: string;
+  pi_address: string;
+  pi_phone: string;
   protocol_number: string;
   sponsor: string;
   contact_name: string;
@@ -116,9 +118,8 @@ const SIGNATURE_SECTION = 'signatures';
 // ---------------------------------------------------------------------------
 
 const APPROVED_EDITABLE_PROMPTS = new Set([
-  '[protocol_director_name]',
-  '[protocol_director_address]',
-  '[protocol_director_phone]',
+  // NOTE: [protocol_director_name], [protocol_director_address], [protocol_director_phone]
+  // are NOT listed here — they are globally bound from Study Setup and auto-substituted.
   '[study_topic]',
   '[study_goal]',
   '[selection_rationale]',
@@ -188,7 +189,11 @@ function substitutePlaceholders(
     .replace(/\[SPONSOR\]/g, study.sponsor || '')
     .replace(/\[CONTACT_NAME\]/g, study.contact_name || '')
     .replace(/\[CONTACT_PHONE\]/g, study.contact_phone || '')
-    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '');
+    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '')
+    // Global protocol director bindings from Study Setup
+    .replace(/\[protocol_director_name\]/gi, study.pi_name || '[protocol_director_name]')
+    .replace(/\[protocol_director_address\]/gi, study.pi_address || '[protocol_director_address]')
+    .replace(/\[protocol_director_phone\]/gi, study.pi_phone || '[protocol_director_phone]');
 
   if (fieldValues) {
     for (const [key, value] of Object.entries(fieldValues)) {

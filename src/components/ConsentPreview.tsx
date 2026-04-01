@@ -22,6 +22,8 @@ interface StudyInfo {
   title: string;
   short_title: string;
   pi_name: string;
+  pi_address: string;
+  pi_phone: string;
   protocol_number: string;
   sponsor: string;
   contact_name: string;
@@ -61,6 +63,13 @@ const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementTy
   structured_block: { label: 'Conditionally included', icon: GitBranch, className: 'border-blue-500/30 text-blue-600' },
 };
 
+/** Fields that are globally bound from Study Setup – hide from per-clause editing */
+const GLOBAL_BOUND_FIELDS = new Set([
+  'protocol_director_name',
+  'protocol_director_address',
+  'protocol_director_phone',
+]);
+
 function replacePlaceholders(text: string, study: StudyInfo, fieldValues?: Record<string, string>): string {
   let result = text
     .replace(/\[STUDY_TITLE\]/g, study.title || '[STUDY TITLE]')
@@ -70,7 +79,11 @@ function replacePlaceholders(text: string, study: StudyInfo, fieldValues?: Recor
     .replace(/\[SPONSOR\]/g, study.sponsor || '[SPONSOR]')
     .replace(/\[CONTACT_NAME\]/g, study.contact_name || '[CONTACT NAME]')
     .replace(/\[CONTACT_PHONE\]/g, study.contact_phone || '[CONTACT PHONE]')
-    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '[CONTACT EMAIL]');
+    .replace(/\[CONTACT_EMAIL\]/g, study.contact_email || '[CONTACT EMAIL]')
+    // Global protocol director bindings from Study Setup
+    .replace(/\[protocol_director_name\]/gi, study.pi_name || '[protocol_director_name]')
+    .replace(/\[protocol_director_address\]/gi, study.pi_address || '[protocol_director_address]')
+    .replace(/\[protocol_director_phone\]/gi, study.pi_phone || '[protocol_director_phone]');
 
   // Replace custom field placeholders from editable_fields values
   if (fieldValues) {
@@ -87,7 +100,8 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
   if (!fields || !Array.isArray(fields)) return [];
   return fields.filter(
     (f): f is EditableField =>
-      typeof f === 'object' && f !== null && 'field_key' in (f as Record<string, unknown>)
+      typeof f === 'object' && f !== null && 'field_key' in (f as Record<string, unknown>) &&
+      !GLOBAL_BOUND_FIELDS.has((f as EditableField).field_key)
   );
 }
 
