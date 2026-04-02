@@ -32,6 +32,7 @@ export interface StudyAnswers {
   specimen_storage_mode: 'no_specimens' | 'stored_for_this_study_only' | 'stored_for_future_research' | '';
   collects_specimens: boolean;  // derived from specimen_storage_mode
   specimens_unlinked: boolean;
+  specimen_storage_description_text: string;
   specimens_sent_outside_stanford: boolean;
 
   // Future use
