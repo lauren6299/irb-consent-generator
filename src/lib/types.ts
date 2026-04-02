@@ -40,8 +40,11 @@ export interface StudyAnswers {
   commercial_value_possible: boolean;
 
   // Genetics
+  includes_genetics_section: boolean;
   includes_genetic_testing: boolean;
+  whole_genome_sequencing_choice: boolean;
   return_results_policy: 'none' | 'clinical_only' | 'choice_or_recontact' | '';
+  deposits_genetic_data_in_nih_repository: boolean;
 
   // MRI
   includes_mri: boolean;
@@ -51,20 +54,21 @@ export interface StudyAnswers {
   mri_field_strength_gte_3t: boolean;
 
   // Pregnancy
+  includes_pregnancy_section: boolean;
   childbearing_potential_risk_language_needed: boolean;
   partner_pregnancy_risk_language_needed: boolean;
   minor_pregnancy_testing: boolean;
 
   // Communicable Disease
+  includes_communicable_disease_section: boolean;
   tests_reportable_communicable_disease: boolean;
   tests_hiv: boolean;
 
   // Gene Transfer
   gene_transfer_study: boolean;
   autopsy_may_be_requested: boolean;
-
-  // NIH
-  deposits_genetic_data_in_nih_repository: boolean;
+  prior_recipients_n: string;
+  long_term_followup_duration: string;
 
   // Regulatory
   hipaa_required: boolean;
