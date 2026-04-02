@@ -747,7 +747,9 @@ export async function generateConsentDocx(
     futureUseInjected = true;
     children.push(subHeading('Future Use of Private Information and/or Specimens'));
     children.push(bodyParagraph(
-      'Research using private information and/or specimens is an important way to try to understand human disease. You are being given this information because the investigators want to save private information and/or specimens for future research.'
+      answers?.future_research_use_allowed
+        ? 'Research using private information and/or specimens is an important way to try to understand human disease. The investigators would like to store your private information and/or specimens for possible future research.'
+        : 'Research using private information and/or specimens is an important way to try to understand human disease. In this study, your private information and/or specimens will only be used for the purposes described in this consent form.'
     ));
     if (answers?.future_research_use_allowed) {
       children.push(bodyParagraph(
