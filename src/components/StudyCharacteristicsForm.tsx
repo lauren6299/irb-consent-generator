@@ -112,7 +112,7 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
           <ToggleRow answers={answers} onChange={onChange} items={[
             ['interventional_study', 'Interventional Study'],
           ]} />
-          {(answers.has_single_visit || answers.has_multiple_required_visits) && (
+          {(answers.has_multiple_required_visits || answers.has_optional_followup_visits) && (
             <div className="space-y-1">
               <Label htmlFor="required_visit_schedule_text" className="text-sm">Required visit schedule</Label>
               <Textarea
