@@ -64,6 +64,7 @@ interface Props {
   onSpecimenStorageDescriptionTextChange?: (text: string) => void;
   specimensUnlinked?: boolean;
   includeHipaaAuthorization?: boolean;
+  includeSensitiveInformationAuthorization?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
