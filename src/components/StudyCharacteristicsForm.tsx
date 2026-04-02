@@ -366,6 +366,9 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
         <ToggleRow answers={answers} onChange={onChange} items={[
           ['include_hipaa_authorization', 'Include HIPAA Authorization Page'],
           ['include_sensitive_information_authorization', 'Include Sensitive Information Consent Block'],
+          ['include_study_funder_recipients', 'Include Study Funder Recipients (HIPAA)'],
+          ['include_external_collaborators', 'Include External Collaborators (HIPAA)'],
+          ['include_pavir', 'Include PAVIR (HIPAA)'],
           ['return_of_results', 'Return of Results'],
           ['vulnerable_populations', 'Vulnerable Populations'],
           ['federally_supported', 'Federally Supported'],

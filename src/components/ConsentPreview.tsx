@@ -65,6 +65,9 @@ interface Props {
   specimensUnlinked?: boolean;
   includeHipaaAuthorization?: boolean;
   includeSensitiveInformationAuthorization?: boolean;
+  includeStudyFunderRecipients?: boolean;
+  includeExternalCollaborators?: boolean;
+  includePavir?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
@@ -120,7 +123,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
 /** Clause keys suppressed in preview because they are replaced by dedicated editable fields */
 const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement', 'future_use_intro', 'future_use_not_allowed']);
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false, includeHipaaAuthorization = false, includeSensitiveInformationAuthorization = false }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false, includeHipaaAuthorization = false, includeSensitiveInformationAuthorization = false, includeStudyFunderRecipients = false, includeExternalCollaborators = false, includePavir = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section && !SUPPRESSED_CLAUSE_KEYS.has(c.clause_key));
     return acc;
@@ -463,11 +466,17 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               <li>Others who are required by law to review the quality and safety of the research, including but not limited to:
                 <ul className="list-[circle] pl-5 space-y-0.5">
                   <li>State, federal, and international government agencies or committees, such as the Food and Drug Administration or the Office for Human Research Protections</li>
-                  <li>The study funder [name of funder], study sponsor and/or their representatives</li>
+                  {includeStudyFunderRecipients && (
+                    <li>The study funder [name of funder], study sponsor and/or their representatives</li>
+                  )}
                 </ul>
               </li>
-              <li>Researchers and/or those responsible for research with whom collaboration may be required</li>
-              <li>The Palo Alto Veterans Institute for Research (PAVIR)</li>
+              {includeExternalCollaborators && (
+                <li>Researchers and/or those responsible for research with whom collaboration may be required (e.g. other hospitals or academic centers)</li>
+              )}
+              {includePavir && (
+                <li>The Palo Alto Veterans Institute for Research (PAVIR)</li>
+              )}
             </ul>
             <p>If we share your information with groups outside of Stanford University, they may not be required to follow the same federal privacy laws. They may also share your information with others not described in this form.</p>
 

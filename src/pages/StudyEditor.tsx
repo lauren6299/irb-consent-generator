@@ -346,6 +346,9 @@ export default function StudyEditor() {
                 specimensUnlinked={answers.specimens_unlinked}
                 includeHipaaAuthorization={answers.include_hipaa_authorization}
                 includeSensitiveInformationAuthorization={answers.include_sensitive_information_authorization}
+                includeStudyFunderRecipients={answers.include_study_funder_recipients}
+                includeExternalCollaborators={answers.include_external_collaborators}
+                includePavir={answers.include_pavir}
               />
             </div>
           </ScrollArea>
