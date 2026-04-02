@@ -164,6 +164,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   specimen_storage_mode: '',
   collects_specimens: false,
   specimens_unlinked: false,
+  specimen_storage_description_text: 'Your specimens will be stored [describe how specimens will be stored and whether they are linked to you, for example by name, medical record number, or a coded identifier].',
   specimens_sent_outside_stanford: false,
   future_research_use_allowed: false,
   commercial_value_possible: false,
