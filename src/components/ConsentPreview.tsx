@@ -63,6 +63,7 @@ interface Props {
   specimenStorageDescriptionText?: string;
   onSpecimenStorageDescriptionTextChange?: (text: string) => void;
   specimensUnlinked?: boolean;
+  includeHipaaAuthorization?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
@@ -118,7 +119,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
 /** Clause keys suppressed in preview because they are replaced by dedicated editable fields */
 const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement', 'future_use_intro', 'future_use_not_allowed']);
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false, includeHipaaAuthorization = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section && !SUPPRESSED_CLAUSE_KEYS.has(c.clause_key));
     return acc;
@@ -407,6 +408,115 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
           </div>
         );
       })}
+
+      {/* HIPAA Authorization Section */}
+      {includeHipaaAuthorization && (
+        <div className="mt-10 pt-8 border-t-2 border-primary/30">
+          <h3 className="font-heading text-lg font-bold mb-4">
+            Authorization To Use Your Personal Health Information For Research Purposes
+          </h3>
+          <div className="space-y-3 text-sm leading-relaxed">
+            <p>Information about you and your health is personal and private. We need your permission to use and share it for this study. If you sign this form, it will provide that permission. The form tells you how your health information will be used or shared for the study. Please read it carefully before signing it.</p>
+
+            <p className="font-semibold">What information will be used for this study?</p>
+            <p>We will include and use the information below in our research records:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Demographic information like
+                <ul className="list-[circle] pl-5 space-y-0.5">
+                  <li>name</li>
+                  <li>age and birthdate</li>
+                  <li>race and ethnicity</li>
+                  <li>gender and sex</li>
+                  <li>contact information (phone number, address, email)</li>
+                </ul>
+              </li>
+            </ul>
+            <p className="italic">Optional</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Social Security Number</li>
+              <li>Financial records</li>
+              <li>Photo, video, and audio recordings</li>
+              <li>Information from health tracking apps</li>
+              <li>Information from other studies you have participated in</li>
+              <li>Relevant information from your medical record like
+                <ul className="list-[circle] pl-5 space-y-0.5">
+                  <li>medical history and diagnoses</li>
+                  <li>current and past medications or treatments</li>
+                  <li>information from physical examinations</li>
+                  <li>lab and imaging results</li>
+                  <li>clinical notes</li>
+                </ul>
+              </li>
+              <li>Information from all tests and procedures that will be done for this study</li>
+            </ul>
+
+            <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
+            <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
+            <ul className="list-none pl-2 space-y-1">
+              <li>☐ I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.</li>
+              <li>☐ I agree to the release of my HIV/AIDS testing information.</li>
+              <li>☐ I agree to the release of my genetic testing information.</li>
+              <li>☐ I agree to the release of information pertaining to my mental health diagnosis or treatment.</li>
+              <li>☐ I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).</li>
+            </ul>
+
+            <p className="font-semibold">Who may use, share, or receive my information?</p>
+            <p>The research records may be used and shared with others who are working with us on this research. This includes:</p>
+            <ul className="list-disc pl-5 space-y-0.5">
+              <li>Members of the research team and those at Stanford University who are performing their jobs to support research</li>
+              <li>Others at Stanford who oversee the research</li>
+              <li>Your health care team or organization who may receive it for treatment purposes</li>
+              <li>Others who are required by law to review the quality and safety of the research, including but not limited to:
+                <ul className="list-[circle] pl-5 space-y-0.5">
+                  <li>State, federal, and international government agencies or committees, such as the Food and Drug Administration or the Office for Human Research Protections</li>
+                  <li>The study funder [name of funder], study sponsor and/or their representatives</li>
+                </ul>
+              </li>
+              <li>Researchers and/or those responsible for research with whom collaboration may be required</li>
+              <li>The Palo Alto Veterans Institute for Research (PAVIR)</li>
+            </ul>
+            <p>If we share your information with groups outside of Stanford University, they may not be required to follow the same federal privacy laws. They may also share your information with others not described in this form.</p>
+
+            <p className="font-semibold">Do I have to sign this permission form?</p>
+            <p>You do not have to sign this permission form. You can still receive medical care at a Stanford Medicine affiliated organization if you don&apos;t sign this form. If you do not sign this form, you will not be able to participate in this research study.</p>
+
+            <p className="font-semibold">If I sign, can I change my mind later?</p>
+            <p>You can cancel your permission at any time. If you change your mind, we will not collect new information from you for the study and you will be withdrawn from the study. But we can continue to use information we have already collected and started to use in our research, to maintain the integrity of the research.</p>
+            <p>If you wish to cancel your permission, you must write a letter or email to the Protocol Director using the contact information provided in this form.</p>
+
+            <p className="font-semibold">When will my permission expire?</p>
+            <p>Your permission to use and share your health information will end when the research and all required study monitoring is over.</p>
+
+            <p className="font-semibold">Will access to my information in my Stanford medical record be limited during the study?</p>
+            <p>You have a right to use information about you to make decisions about your health care. However, your information from this research will not be available during the study. It will be available after the study is finished.</p>
+
+            {/* Signature lines */}
+            <div className="mt-6 space-y-4">
+              <div>
+                <p>________________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______________</p>
+                <p>Signature of Adult Participant&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date</p>
+              </div>
+              <div>
+                <p>________________________________</p>
+                <p>Print Name of Adult Participant</p>
+              </div>
+              <p className="italic">If authorization is to be obtained from a legally authorized representative:</p>
+              <div>
+                <p>_______________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;______________</p>
+                <p>Signature of Legally Authorized Representative&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date</p>
+              </div>
+              <div>
+                <p>________________________________</p>
+                <p>Print Name of LAR</p>
+              </div>
+              <div>
+                <p>________________________________________________________</p>
+                <p>LAR&apos;s Authority to Act for Participant</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="pt-6 border-t mt-8">
         <p className="text-xs text-muted-foreground italic text-center">

@@ -881,7 +881,166 @@ export async function generateConsentDocx(
     }
   }
 
-  // ===== BUILD DOCUMENT =====
+  // ===== HIPAA AUTHORIZATION (separate page at end) =====
+  if (answers?.include_hipaa_authorization) {
+    children.push(new Paragraph({ pageBreakBefore: true, children: [] }));
+    children.push(sectionHeading('Authorization To Use Your Personal Health Information For Research Purposes', true));
+
+    const hp = (text: string, opts?: { bold?: boolean; italics?: boolean }) =>
+      bodyParagraph(text, { size: HIPAA_SIZE, ...opts });
+
+    children.push(hp('Information about you and your health is personal and private. We need your permission to use and share it for this study. If you sign this form, it will provide that permission. The form tells you how your health information will be used or shared for the study. Please read it carefully before signing it.'));
+
+    children.push(hp('What information will be used for this study?', { bold: true }));
+    children.push(hp('We will include and use the information below in our research records:'));
+
+    // Demographic bullet with sub-items
+    const demographicItems = ['name', 'age and birthdate', 'race and ethnicity', 'gender and sex', 'contact information (phone number, address, email)'];
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'Demographic information like', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 60 },
+    }));
+    for (const item of demographicItems) {
+      children.push(new Paragraph({
+        indent: { left: 1080, hanging: 360 },
+        children: [new TextRun({ text: `○  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 40 },
+      }));
+    }
+
+    children.push(hp('Optional', { italics: true }));
+
+    const optionalItems = [
+      'Social Security Number',
+      'Financial records',
+      'Photo, video, and audio recordings',
+      'Information from health tracking apps',
+      'Information from other studies you have participated in',
+    ];
+    for (const item of optionalItems) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: item, font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 60 },
+      }));
+    }
+
+    // Medical record bullet with sub-items
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'Relevant information from your medical record like', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 60 },
+    }));
+    const medicalSubItems = ['medical history and diagnoses', 'current and past medications or treatments', 'information from physical examinations', 'lab and imaging results', 'clinical notes'];
+    for (const item of medicalSubItems) {
+      children.push(new Paragraph({
+        indent: { left: 1080, hanging: 360 },
+        children: [new TextRun({ text: `○  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 40 },
+      }));
+    }
+
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'Information from all tests and procedures that will be done for this study', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 120 },
+    }));
+
+    children.push(hp('Do I have to give my permission for the disclosure of certain specific types of information?', { bold: true }));
+    children.push(hp('Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:'));
+
+    const consentBoxItems = [
+      'I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.',
+      'I agree to the release of my HIV/AIDS testing information.',
+      'I agree to the release of my genetic testing information.',
+      'I agree to the release of information pertaining to my mental health diagnosis or treatment.',
+      'I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).',
+    ];
+    for (const item of consentBoxItems) {
+      children.push(new Paragraph({
+        indent: { left: 360 },
+        children: [new TextRun({ text: `☐  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 80 },
+      }));
+    }
+
+    children.push(hp('Who may use, share, or receive my information?', { bold: true }));
+    children.push(hp('The research records may be used and shared with others who are working with us on this research. This includes:'));
+
+    const sharingItems = [
+      'Members of the research team and those at Stanford University who are performing their jobs to support research',
+      'Others at Stanford who oversee the research',
+      'Your health care team or organization who may receive it for treatment purposes',
+    ];
+    for (const item of sharingItems) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: item, font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 60 },
+      }));
+    }
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'Others who are required by law to review the quality and safety of the research, including but not limited to:', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 60 },
+    }));
+    children.push(new Paragraph({
+      indent: { left: 1080, hanging: 360 },
+      children: [new TextRun({ text: '○  State, federal, and international government agencies or committees, such as the Food and Drug Administration or the Office for Human Research Protections', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 40 },
+    }));
+    children.push(new Paragraph({
+      indent: { left: 1080, hanging: 360 },
+      children: [new TextRun({ text: '○  The study funder [name of funder], study sponsor and/or their representatives', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 40 },
+    }));
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'Researchers and/or those responsible for research with whom collaboration may be required', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 60 },
+    }));
+    children.push(new Paragraph({
+      numbering: { reference: 'bullets', level: 0 },
+      children: [new TextRun({ text: 'The Palo Alto Veterans Institute for Research (PAVIR)', font: BODY_FONT, size: HIPAA_SIZE })],
+      spacing: { after: 120 },
+    }));
+    children.push(hp('If we share your information with groups outside of Stanford University, they may not be required to follow the same federal privacy laws. They may also share your information with others not described in this form.'));
+
+    children.push(hp('Do I have to sign this permission form?', { bold: true }));
+    children.push(hp('You do not have to sign this permission form. You can still receive medical care at a Stanford Medicine affiliated organization if you don\u2019t sign this form. If you do not sign this form, you will not be able to participate in this research study.'));
+
+    children.push(hp('If I sign, can I change my mind later?', { bold: true }));
+    children.push(hp('You can cancel your permission at any time. If you change your mind, we will not collect new information from you for the study and you will be withdrawn from the study. But we can continue to use information we have already collected and started to use in our research, to maintain the integrity of the research.'));
+    children.push(hp('If you wish to cancel your permission, you must write a letter or email to the Protocol Director using the contact information provided in this form.'));
+
+    children.push(hp('When will my permission expire?', { bold: true }));
+    children.push(hp('Your permission to use and share your health information will end when the research and all required study monitoring is over.'));
+
+    children.push(hp('Will access to my information in my Stanford medical record be limited during the study?', { bold: true }));
+    children.push(hp('You have a right to use information about you to make decisions about your health care. However, your information from this research will not be available during the study. It will be available after the study is finished.'));
+
+    // HIPAA signature blocks
+    children.push(...signatureBlock('Signature of Adult Participant'));
+    children.pop();
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'Print Name of Adult Participant: ________________________________________', font: BODY_FONT, size: META_LABEL_SIZE })],
+      spacing: { after: 200 },
+    }));
+
+    children.push(bodyParagraph('If authorization is to be obtained from a legally authorized representative:', { italics: true, size: HIPAA_SIZE }));
+
+    children.push(...signatureBlock('Signature of Legally Authorized Representative'));
+    children.pop();
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'Print Name of LAR: ________________________________________', font: BODY_FONT, size: META_LABEL_SIZE })],
+      spacing: { after: 200 },
+    }));
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'LAR\u2019s Authority to Act for Participant: ______________________________', font: BODY_FONT, size: META_LABEL_SIZE })],
+      spacing: { after: 200 },
+    }));
+  }
   const doc = new Document({
     numbering: {
       config: [
