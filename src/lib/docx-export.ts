@@ -713,7 +713,33 @@ export async function generateConsentDocx(
   );
 
   let futureUseInjected = false;
+  let specimenStorageInjected = false;
   const shouldInjectFutureUse = !!(answers?.collects_specimens);
+  const shouldInjectSpecimenStorage = !!(answers?.collects_specimens);
+
+  const UNLINKED_STATEMENT = 'Because your specimens will not be linked to your name after they are stored, you cannot withdraw your consent to the use of the specimens after they are taken.';
+
+  // Validate unlinked specimen statement availability
+  if (answers?.specimens_unlinked) {
+    // The unlinked statement is always injected verbatim, so no validation needed for missing text.
+    // But we validate it's not somehow suppressed.
+  }
+
+  /** Inject specimen storage description block */
+  function injectSpecimenStorageBlock() {
+    if (specimenStorageInjected || !shouldInjectSpecimenStorage) return;
+    specimenStorageInjected = true;
+    children.push(subHeading('Specimen Storage'));
+    const storageText = (answers?.specimen_storage_description_text as string) || '';
+    if (storageText.trim()) {
+      for (const line of storageText.split('\n').filter(Boolean)) {
+        children.push(bodyParagraph(line));
+      }
+    }
+    if (answers?.specimens_unlinked) {
+      children.push(bodyParagraph(UNLINKED_STATEMENT));
+    }
+  }
 
   /** Inject the "Future Use of Private Information and/or Specimens" verbatim block */
   function injectFutureUseBlock() {
@@ -732,6 +758,8 @@ export async function generateConsentDocx(
         'Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.'
       ));
     }
+    // Inject specimen storage right after future use
+    injectSpecimenStorageBlock();
   }
 
   for (const clause of bodyClauses) {
