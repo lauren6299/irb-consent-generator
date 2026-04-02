@@ -63,6 +63,7 @@ interface Props {
   specimenStorageDescriptionText?: string;
   onSpecimenStorageDescriptionTextChange?: (text: string) => void;
   specimensUnlinked?: boolean;
+  includeHipaaAuthorization?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
