@@ -118,6 +118,7 @@ export interface StudyAnswers {
 
   // HIPAA Authorization
   include_hipaa_authorization: boolean;
+  include_sensitive_information_authorization: boolean;
 }
 
 // ---------------------------------------------------------------------------
