@@ -294,7 +294,9 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                                 </div>
                                 <h4 className="text-sm font-semibold mb-2">Future Use of Private Information and/or Specimens</h4>
                                 <p className="text-sm leading-relaxed mb-3">
-                                  Research using private information and/or specimens is an important way to try to understand human disease. You are being given this information because the investigators want to save private information and/or specimens for future research.
+                                  {futureResearchUseAllowed
+                                    ? 'Research using private information and/or specimens is an important way to try to understand human disease. The investigators would like to store your private information and/or specimens for possible future research.'
+                                    : 'Research using private information and/or specimens is an important way to try to understand human disease. In this study, your private information and/or specimens will only be used for the purposes described in this consent form.'}
                                 </p>
                                 <p className="text-sm leading-relaxed">
                                   {futureResearchUseAllowed
