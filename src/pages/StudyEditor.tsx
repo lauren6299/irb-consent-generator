@@ -345,6 +345,7 @@ export default function StudyEditor() {
                 onSpecimenStorageDescriptionTextChange={(text) => setAnswers({ ...answers, specimen_storage_description_text: text })}
                 specimensUnlinked={answers.specimens_unlinked}
                 includeHipaaAuthorization={answers.include_hipaa_authorization}
+              />
             </div>
           </ScrollArea>
         </div>
