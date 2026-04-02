@@ -956,21 +956,27 @@ export async function generateConsentDocx(
       children: [new TextRun({ text: '○  State, federal, and international government agencies or committees, such as the Food and Drug Administration or the Office for Human Research Protections', font: BODY_FONT, size: HIPAA_SIZE })],
       spacing: { after: 40 },
     }));
-    children.push(new Paragraph({
-      indent: { left: 1080, hanging: 360 },
-      children: [new TextRun({ text: '○  The study funder [name of funder], study sponsor and/or their representatives', font: BODY_FONT, size: HIPAA_SIZE })],
-      spacing: { after: 40 },
-    }));
-    children.push(new Paragraph({
-      numbering: { reference: 'bullets', level: 0 },
-      children: [new TextRun({ text: 'Researchers and/or those responsible for research with whom collaboration may be required', font: BODY_FONT, size: HIPAA_SIZE })],
-      spacing: { after: 60 },
-    }));
-    children.push(new Paragraph({
-      numbering: { reference: 'bullets', level: 0 },
-      children: [new TextRun({ text: 'The Palo Alto Veterans Institute for Research (PAVIR)', font: BODY_FONT, size: HIPAA_SIZE })],
-      spacing: { after: 120 },
-    }));
+    if (answers?.include_study_funder_recipients) {
+      children.push(new Paragraph({
+        indent: { left: 1080, hanging: 360 },
+        children: [new TextRun({ text: '○  The study funder [name of funder], study sponsor and/or their representatives', font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 40 },
+      }));
+    }
+    if (answers?.include_external_collaborators) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: 'Researchers and/or those responsible for research with whom collaboration may be required (e.g. other hospitals or academic centers)', font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 60 },
+      }));
+    }
+    if (answers?.include_pavir) {
+      children.push(new Paragraph({
+        numbering: { reference: 'bullets', level: 0 },
+        children: [new TextRun({ text: 'The Palo Alto Veterans Institute for Research (PAVIR)', font: BODY_FONT, size: HIPAA_SIZE })],
+        spacing: { after: 120 },
+      }));
+    }
     children.push(hp('If we share your information with groups outside of Stanford University, they may not be required to follow the same federal privacy laws. They may also share your information with others not described in this form.'));
 
     children.push(hp('Do I have to sign this permission form?', { bold: true }));

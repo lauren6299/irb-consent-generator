@@ -466,11 +466,17 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               <li>Others who are required by law to review the quality and safety of the research, including but not limited to:
                 <ul className="list-[circle] pl-5 space-y-0.5">
                   <li>State, federal, and international government agencies or committees, such as the Food and Drug Administration or the Office for Human Research Protections</li>
-                  <li>The study funder [name of funder], study sponsor and/or their representatives</li>
+                  {includeStudyFunderRecipients && (
+                    <li>The study funder [name of funder], study sponsor and/or their representatives</li>
+                  )}
                 </ul>
               </li>
-              <li>Researchers and/or those responsible for research with whom collaboration may be required</li>
-              <li>The Palo Alto Veterans Institute for Research (PAVIR)</li>
+              {includeExternalCollaborators && (
+                <li>Researchers and/or those responsible for research with whom collaboration may be required (e.g. other hospitals or academic centers)</li>
+              )}
+              {includePavir && (
+                <li>The Palo Alto Veterans Institute for Research (PAVIR)</li>
+              )}
             </ul>
             <p>If we share your information with groups outside of Stanford University, they may not be required to follow the same federal privacy laws. They may also share your information with others not described in this form.</p>
 
