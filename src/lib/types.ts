@@ -40,8 +40,11 @@ export interface StudyAnswers {
   commercial_value_possible: boolean;
 
   // Genetics
+  includes_genetics_section: boolean;
   includes_genetic_testing: boolean;
+  whole_genome_sequencing_choice: boolean;
   return_results_policy: 'none' | 'clinical_only' | 'choice_or_recontact' | '';
+  deposits_genetic_data_in_nih_repository: boolean;
 
   // MRI
   includes_mri: boolean;
@@ -51,20 +54,21 @@ export interface StudyAnswers {
   mri_field_strength_gte_3t: boolean;
 
   // Pregnancy
+  includes_pregnancy_section: boolean;
   childbearing_potential_risk_language_needed: boolean;
   partner_pregnancy_risk_language_needed: boolean;
   minor_pregnancy_testing: boolean;
 
   // Communicable Disease
+  includes_communicable_disease_section: boolean;
   tests_reportable_communicable_disease: boolean;
   tests_hiv: boolean;
 
   // Gene Transfer
   gene_transfer_study: boolean;
   autopsy_may_be_requested: boolean;
-
-  // NIH
-  deposits_genetic_data_in_nih_repository: boolean;
+  prior_recipients_n: string;
+  long_term_followup_duration: string;
 
   // Regulatory
   hipaa_required: boolean;
@@ -168,21 +172,27 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   specimens_sent_outside_stanford: false,
   future_research_use_allowed: false,
   commercial_value_possible: false,
+  includes_genetics_section: false,
   includes_genetic_testing: false,
+  whole_genome_sequencing_choice: false,
   return_results_policy: '',
+  deposits_genetic_data_in_nih_repository: false,
   includes_mri: false,
   mri_non_fda_components: false,
   mri_research_only: false,
   mri_uses_contrast: false,
   mri_field_strength_gte_3t: false,
+  includes_pregnancy_section: false,
   childbearing_potential_risk_language_needed: false,
   partner_pregnancy_risk_language_needed: false,
   minor_pregnancy_testing: false,
+  includes_communicable_disease_section: false,
   tests_reportable_communicable_disease: false,
   tests_hiv: false,
   gene_transfer_study: false,
   autopsy_may_be_requested: false,
-  deposits_genetic_data_in_nih_repository: false,
+  prior_recipients_n: '',
+  long_term_followup_duration: '',
   hipaa_required: false,
   return_of_results: false,
   vulnerable_populations: false,
