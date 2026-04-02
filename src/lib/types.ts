@@ -230,6 +230,9 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   use_no_participation_alternative: false,
   include_hipaa_authorization: false,
   include_sensitive_information_authorization: false,
+  include_study_funder_recipients: false,
+  include_external_collaborators: false,
+  include_pavir: false,
 };
 
 /**
