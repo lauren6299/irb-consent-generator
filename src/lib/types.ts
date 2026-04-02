@@ -115,6 +115,9 @@ export interface StudyAnswers {
   include_failure_follow_instructions_reason: boolean;
   include_unanticipated_circumstances_reason: boolean;
   use_no_participation_alternative: boolean;
+
+  // HIPAA Authorization
+  include_hipaa_authorization: boolean;
 }
 
 // ---------------------------------------------------------------------------
