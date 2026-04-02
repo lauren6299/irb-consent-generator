@@ -911,22 +911,24 @@ export async function generateConsentDocx(
 
 
 
-    children.push(hp('Do I have to give my permission for the disclosure of certain specific types of information?', { bold: true }));
-    children.push(hp('Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:'));
+    if (answers?.include_sensitive_information_authorization) {
+      children.push(hp('Do I have to give my permission for the disclosure of certain specific types of information?', { bold: true }));
+      children.push(hp('Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:'));
 
-    const consentBoxItems = [
-      'I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.',
-      'I agree to the release of my HIV/AIDS testing information.',
-      'I agree to the release of my genetic testing information.',
-      'I agree to the release of information pertaining to my mental health diagnosis or treatment.',
-      'I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).',
-    ];
-    for (const item of consentBoxItems) {
-      children.push(new Paragraph({
-        indent: { left: 360 },
-        children: [new TextRun({ text: `☐  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
-        spacing: { after: 80 },
-      }));
+      const consentBoxItems = [
+        'I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.',
+        'I agree to the release of my HIV/AIDS testing information.',
+        'I agree to the release of my genetic testing information.',
+        'I agree to the release of information pertaining to my mental health diagnosis or treatment.',
+        'I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).',
+      ];
+      for (const item of consentBoxItems) {
+        children.push(new Paragraph({
+          indent: { left: 360 },
+          children: [new TextRun({ text: `☐  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
+          spacing: { after: 80 },
+        }));
+      }
     }
 
     children.push(hp('Who may use, share, or receive my information?', { bold: true }));

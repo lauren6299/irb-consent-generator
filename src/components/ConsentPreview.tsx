@@ -440,15 +440,19 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               </p>
             </div>
 
-            <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
-            <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
-            <ul className="list-none pl-2 space-y-1">
-              <li>☐ I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.</li>
-              <li>☐ I agree to the release of my HIV/AIDS testing information.</li>
-              <li>☐ I agree to the release of my genetic testing information.</li>
-              <li>☐ I agree to the release of information pertaining to my mental health diagnosis or treatment.</li>
-              <li>☐ I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).</li>
-            </ul>
+            {includeSensitiveInformationAuthorization && (
+              <>
+                <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
+                <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
+                <ul className="list-none pl-2 space-y-1">
+                  <li>☐ I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.</li>
+                  <li>☐ I agree to the release of my HIV/AIDS testing information.</li>
+                  <li>☐ I agree to the release of my genetic testing information.</li>
+                  <li>☐ I agree to the release of information pertaining to my mental health diagnosis or treatment.</li>
+                  <li>☐ I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).</li>
+                </ul>
+              </>
+            )}
 
             <p className="font-semibold">Who may use, share, or receive my information?</p>
             <p>The research records may be used and shared with others who are working with us on this research. This includes:</p>
