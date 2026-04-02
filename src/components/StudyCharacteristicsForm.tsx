@@ -193,63 +193,141 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
 
       {/* Genetics */}
       <Section title="Genetics">
-        <ToggleRow answers={answers} onChange={onChange} items={[
-          ['includes_genetic_testing', 'Includes Genetic Testing'],
+        <ToggleRow answers={answers} onChange={(a) => {
+          if (a.includes_genetics_section === false) {
+            onChange({ ...a, includes_genetics_section: false, includes_genetic_testing: false, whole_genome_sequencing_choice: false, return_results_policy: '', deposits_genetic_data_in_nih_repository: false });
+          } else {
+            onChange(a);
+          }
+        }} items={[
+          ['includes_genetics_section', 'Includes Genetics Section'],
         ]} />
-        <div className="space-y-2 mt-3">
-          <Label>Return of Results Policy</Label>
-          <Select value={answers.return_results_policy} onValueChange={(v) => set('return_results_policy', v)}>
-            <SelectTrigger><SelectValue placeholder="Select policy" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">No Results Returned</SelectItem>
-              <SelectItem value="clinical_only">Clinical Results Only</SelectItem>
-              <SelectItem value="choice_or_recontact">Choice / Re-contact</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {answers.includes_genetics_section && (
+          <div className="space-y-3 pl-2 border-l-2 border-primary/20 mt-3">
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['includes_genetic_testing', 'Includes Genetic Testing'],
+              ['whole_genome_sequencing_choice', 'Whole Genome Sequencing Choice'],
+              ['deposits_genetic_data_in_nih_repository', 'Deposits Genetic Data in NIH Repository'],
+            ]} />
+            <div className="space-y-2">
+              <Label>Return of Results Policy</Label>
+              <Select value={answers.return_results_policy} onValueChange={(v) => set('return_results_policy', v)}>
+                <SelectTrigger><SelectValue placeholder="Select policy" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No Results Returned</SelectItem>
+                  <SelectItem value="clinical_only">Clinical Results Only</SelectItem>
+                  <SelectItem value="choice_or_recontact">Choice / Re-contact</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
       </Section>
 
       {/* MRI */}
       <Section title="MRI">
-        <ToggleRow answers={answers} onChange={onChange} items={[
+        <ToggleRow answers={answers} onChange={(a) => {
+          if (a.includes_mri === false) {
+            onChange({ ...a, includes_mri: false, mri_non_fda_components: false, mri_research_only: false, mri_uses_contrast: false, mri_field_strength_gte_3t: false });
+          } else {
+            onChange(a);
+          }
+        }} items={[
           ['includes_mri', 'Includes MRI'],
-          ['mri_non_fda_components', 'Non-FDA Components'],
-          ['mri_research_only', 'Research Only Scans'],
-          ['mri_uses_contrast', 'Uses Contrast'],
-          ['mri_field_strength_gte_3t', 'Field Strength ≥ 3T'],
         ]} />
+        {answers.includes_mri && (
+          <div className="space-y-3 pl-2 border-l-2 border-primary/20 mt-3">
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['mri_non_fda_components', 'Non-FDA Components'],
+              ['mri_research_only', 'Research Only Scans'],
+              ['mri_uses_contrast', 'Uses Contrast'],
+              ['mri_field_strength_gte_3t', 'Field Strength ≥ 3T'],
+            ]} />
+          </div>
+        )}
       </Section>
 
       {/* Pregnancy */}
       <Section title="Pregnancy">
-        <ToggleRow answers={answers} onChange={onChange} items={[
-          ['childbearing_potential_risk_language_needed', 'Childbearing Potential Risk Language'],
-          ['partner_pregnancy_risk_language_needed', 'Partner Pregnancy Risk Language'],
-          ['minor_pregnancy_testing', 'Minor Pregnancy Testing'],
+        <ToggleRow answers={answers} onChange={(a) => {
+          if (a.includes_pregnancy_section === false) {
+            onChange({ ...a, includes_pregnancy_section: false, childbearing_potential_risk_language_needed: false, partner_pregnancy_risk_language_needed: false, minor_pregnancy_testing: false });
+          } else {
+            onChange(a);
+          }
+        }} items={[
+          ['includes_pregnancy_section', 'Includes Pregnancy Section'],
         ]} />
+        {answers.includes_pregnancy_section && (
+          <div className="space-y-3 pl-2 border-l-2 border-primary/20 mt-3">
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['childbearing_potential_risk_language_needed', 'Childbearing Potential Risk Language'],
+              ['partner_pregnancy_risk_language_needed', 'Partner Pregnancy Risk Language'],
+              ['minor_pregnancy_testing', 'Minor Pregnancy Testing'],
+            ]} />
+          </div>
+        )}
       </Section>
 
       {/* Communicable Disease */}
       <Section title="Communicable Disease">
-        <ToggleRow answers={answers} onChange={onChange} items={[
-          ['tests_reportable_communicable_disease', 'Tests Reportable Disease'],
-          ['tests_hiv', 'Tests HIV'],
+        <ToggleRow answers={answers} onChange={(a) => {
+          if (a.includes_communicable_disease_section === false) {
+            onChange({ ...a, includes_communicable_disease_section: false, tests_reportable_communicable_disease: false, tests_hiv: false });
+          } else {
+            onChange(a);
+          }
+        }} items={[
+          ['includes_communicable_disease_section', 'Includes Communicable Disease Section'],
         ]} />
+        {answers.includes_communicable_disease_section && (
+          <div className="space-y-3 pl-2 border-l-2 border-primary/20 mt-3">
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['tests_reportable_communicable_disease', 'Tests Reportable Disease'],
+              ['tests_hiv', 'Tests HIV'],
+            ]} />
+          </div>
+        )}
       </Section>
 
       {/* Gene Transfer */}
       <Section title="Gene Transfer">
-        <ToggleRow answers={answers} onChange={onChange} items={[
+        <ToggleRow answers={answers} onChange={(a) => {
+          if (a.gene_transfer_study === false) {
+            onChange({ ...a, gene_transfer_study: false, autopsy_may_be_requested: false, prior_recipients_n: '', long_term_followup_duration: '' });
+          } else {
+            onChange(a);
+          }
+        }} items={[
           ['gene_transfer_study', 'Gene Transfer Study'],
-          ['autopsy_may_be_requested', 'Autopsy May Be Requested'],
         ]} />
-      </Section>
-
-      {/* NIH */}
-      <Section title="NIH">
-        <ToggleRow answers={answers} onChange={onChange} items={[
-          ['deposits_genetic_data_in_nih_repository', 'Deposits Genetic Data in NIH Repository'],
-        ]} />
+        {answers.gene_transfer_study && (
+          <div className="space-y-3 pl-2 border-l-2 border-primary/20 mt-3">
+            <ToggleRow answers={answers} onChange={onChange} items={[
+              ['autopsy_may_be_requested', 'Autopsy May Be Requested'],
+            ]} />
+            <div className="space-y-1">
+              <Label htmlFor="prior_recipients_n" className="text-sm">Prior Recipients (N)</Label>
+              <Input
+                id="prior_recipients_n"
+                className="text-sm bg-background"
+                placeholder="e.g. 50"
+                value={answers.prior_recipients_n || ''}
+                onChange={(e) => onChange({ ...answers, prior_recipients_n: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="long_term_followup_duration" className="text-sm">Long-term Follow-up Duration</Label>
+              <Input
+                id="long_term_followup_duration"
+                className="text-sm bg-background"
+                placeholder="e.g. 15 years"
+                value={answers.long_term_followup_duration || ''}
+                onChange={(e) => onChange({ ...answers, long_term_followup_duration: e.target.value })}
+              />
+            </div>
+          </div>
+        )}
       </Section>
 
       <Separator />
