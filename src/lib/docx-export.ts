@@ -909,43 +909,7 @@ export async function generateConsentDocx(
       }));
     }
 
-    children.push(hp('Optional', { italics: true }));
 
-    const optionalItems = [
-      'Social Security Number',
-      'Financial records',
-      'Photo, video, and audio recordings',
-      'Information from health tracking apps',
-      'Information from other studies you have participated in',
-    ];
-    for (const item of optionalItems) {
-      children.push(new Paragraph({
-        numbering: { reference: 'bullets', level: 0 },
-        children: [new TextRun({ text: item, font: BODY_FONT, size: HIPAA_SIZE })],
-        spacing: { after: 60 },
-      }));
-    }
-
-    // Medical record bullet with sub-items
-    children.push(new Paragraph({
-      numbering: { reference: 'bullets', level: 0 },
-      children: [new TextRun({ text: 'Relevant information from your medical record like', font: BODY_FONT, size: HIPAA_SIZE })],
-      spacing: { after: 60 },
-    }));
-    const medicalSubItems = ['medical history and diagnoses', 'current and past medications or treatments', 'information from physical examinations', 'lab and imaging results', 'clinical notes'];
-    for (const item of medicalSubItems) {
-      children.push(new Paragraph({
-        indent: { left: 1080, hanging: 360 },
-        children: [new TextRun({ text: `○  ${item}`, font: BODY_FONT, size: HIPAA_SIZE })],
-        spacing: { after: 40 },
-      }));
-    }
-
-    children.push(new Paragraph({
-      numbering: { reference: 'bullets', level: 0 },
-      children: [new TextRun({ text: 'Information from all tests and procedures that will be done for this study', font: BODY_FONT, size: HIPAA_SIZE })],
-      spacing: { after: 120 },
-    }));
 
     children.push(hp('Do I have to give my permission for the disclosure of certain specific types of information?', { bold: true }));
     children.push(hp('Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:'));
