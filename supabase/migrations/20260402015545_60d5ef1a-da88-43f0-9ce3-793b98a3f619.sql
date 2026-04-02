@@ -1,0 +1,1 @@
+UPDATE clauses SET trigger_expression = '{"collects_specimens": true, "includes_genetics_section": true}'::jsonb WHERE id = '1901993d-092c-44c9-b475-3a15e9615f3c';
