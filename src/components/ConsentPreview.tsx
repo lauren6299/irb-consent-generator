@@ -431,24 +431,13 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                 </ul>
               </li>
             </ul>
-            <p className="italic">Optional</p>
-            <ul className="list-disc pl-5 space-y-0.5">
-              <li>Social Security Number</li>
-              <li>Financial records</li>
-              <li>Photo, video, and audio recordings</li>
-              <li>Information from health tracking apps</li>
-              <li>Information from other studies you have participated in</li>
-              <li>Relevant information from your medical record like
-                <ul className="list-[circle] pl-5 space-y-0.5">
-                  <li>medical history and diagnoses</li>
-                  <li>current and past medications or treatments</li>
-                  <li>information from physical examinations</li>
-                  <li>lab and imaging results</li>
-                  <li>clinical notes</li>
-                </ul>
-              </li>
-              <li>Information from all tests and procedures that will be done for this study</li>
-            </ul>
+
+            {/* UI-only helper text – not exported */}
+            <div className="rounded-md border border-muted p-3 bg-muted/30">
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="font-semibold">Optional:</span> Include only the categories of information that will actually be collected in your study (e.g., financial data, recordings, app data, prior study participation, or detailed medical record elements). Remove any categories that do not apply.
+              </p>
+            </div>
 
             <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
             <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
