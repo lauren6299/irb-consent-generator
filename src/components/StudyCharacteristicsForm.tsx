@@ -364,7 +364,6 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
       {/* Regulatory */}
       <Section title="Regulatory">
         <ToggleRow answers={answers} onChange={onChange} items={[
-          ['hipaa_required', 'HIPAA Authorization Required'],
           ['include_hipaa_authorization', 'Include HIPAA Authorization Page'],
           ['include_sensitive_information_authorization', 'Include Sensitive Information Consent Block'],
           ['return_of_results', 'Return of Results'],
