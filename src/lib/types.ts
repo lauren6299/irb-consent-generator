@@ -119,6 +119,9 @@ export interface StudyAnswers {
   // HIPAA Authorization
   include_hipaa_authorization: boolean;
   include_sensitive_information_authorization: boolean;
+  include_study_funder_recipients: boolean;
+  include_external_collaborators: boolean;
+  include_pavir: boolean;
 }
 
 // ---------------------------------------------------------------------------
