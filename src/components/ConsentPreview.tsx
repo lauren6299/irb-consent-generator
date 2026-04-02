@@ -60,6 +60,9 @@ interface Props {
   onPurposeEnrollmentTextChange?: (text: string) => void;
   collectsSpecimens?: boolean;
   futureResearchUseAllowed?: boolean;
+  specimenStorageDescriptionText?: string;
+  onSpecimenStorageDescriptionTextChange?: (text: string) => void;
+  specimensUnlinked?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
@@ -115,7 +118,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
 /** Clause keys suppressed in preview because they are replaced by dedicated editable fields */
 const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement']);
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section && !SUPPRESSED_CLAUSE_KEYS.has(c.clause_key));
     return acc;
@@ -298,6 +301,33 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                                     ? 'Identifiers might be removed from identifiable private information and/or identifiable specimens and, after such removal, the information and/or specimens could be used for future research studies or distributed to another investigator for future research studies without additional informed consent from you.'
                                     : 'Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.'}
                                 </p>
+                              </div>
+                            )}
+
+                            {/* Specimen Storage Description – editable block */}
+                            {collectsSpecimens && (
+                              <div className="mt-4 clause-required">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <Badge variant="outline" className={`text-[10px] gap-1 ${CONTENT_TYPE_LABELS.required_editable.className}`}>
+                                    <PenLine className="h-3 w-3" /> {CONTENT_TYPE_LABELS.required_editable.label}
+                                  </Badge>
+                                </div>
+                                <h4 className="text-sm font-semibold mb-2">Specimen Storage</h4>
+                                <Textarea
+                                  className="text-sm leading-relaxed min-h-[80px] bg-background"
+                                  placeholder="Describe how specimens will be stored and linked…"
+                                  value={specimenStorageDescriptionText}
+                                  onChange={(e) => onSpecimenStorageDescriptionTextChange?.(e.target.value)}
+                                  disabled={!onSpecimenStorageDescriptionTextChange}
+                                />
+                                {specimensUnlinked && (
+                                  <div className="mt-2 flex items-start gap-2 rounded-md bg-muted/40 border border-muted px-3 py-2">
+                                    <Lock className="h-3.5 w-3.5 mt-0.5 text-muted-foreground shrink-0" />
+                                    <p className="text-sm leading-relaxed text-muted-foreground">
+                                      Because your specimens will not be linked to your name after they are stored, you cannot withdraw your consent to the use of the specimens after they are taken.
+                                    </p>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </>
