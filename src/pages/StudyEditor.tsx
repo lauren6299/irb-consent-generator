@@ -349,6 +349,7 @@ export default function StudyEditor() {
                 includeStudyFunderRecipients={answers.include_study_funder_recipients}
                 includeExternalCollaborators={answers.include_external_collaborators}
                 includePavir={answers.include_pavir}
+              />
             </div>
           </ScrollArea>
         </div>
