@@ -224,6 +224,7 @@ export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   include_failure_follow_instructions_reason: false,
   include_unanticipated_circumstances_reason: false,
   use_no_participation_alternative: false,
+  include_hipaa_authorization: false,
 };
 
 /**
