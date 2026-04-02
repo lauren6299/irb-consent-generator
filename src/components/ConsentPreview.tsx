@@ -116,7 +116,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
 }
 
 /** Clause keys suppressed in preview because they are replaced by dedicated editable fields */
-const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement']);
+const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement', 'future_use_intro', 'future_use_not_allowed']);
 
 export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
