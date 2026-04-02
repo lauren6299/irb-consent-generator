@@ -341,6 +341,9 @@ export default function StudyEditor() {
                 onPurposeEnrollmentTextChange={(text) => setAnswers({ ...answers, purpose_enrollment_text: text })}
                 collectsSpecimens={answers.collects_specimens}
                 futureResearchUseAllowed={answers.future_research_use_allowed}
+                specimenStorageDescriptionText={answers.specimen_storage_description_text}
+                onSpecimenStorageDescriptionTextChange={(text) => setAnswers({ ...answers, specimen_storage_description_text: text })}
+                specimensUnlinked={answers.specimens_unlinked}
               />
             </div>
           </ScrollArea>

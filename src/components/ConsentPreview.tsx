@@ -303,6 +303,33 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                                 </p>
                               </div>
                             )}
+
+                            {/* Specimen Storage Description – editable block */}
+                            {collectsSpecimens && (
+                              <div className="mt-4 clause-required">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <Badge variant="outline" className={`text-[10px] gap-1 ${CONTENT_TYPE_LABELS.required_editable.className}`}>
+                                    <PenLine className="h-3 w-3" /> {CONTENT_TYPE_LABELS.required_editable.label}
+                                  </Badge>
+                                </div>
+                                <h4 className="text-sm font-semibold mb-2">Specimen Storage</h4>
+                                <Textarea
+                                  className="text-sm leading-relaxed min-h-[80px] bg-background"
+                                  placeholder="Describe how specimens will be stored and linked…"
+                                  value={specimenStorageDescriptionText}
+                                  onChange={(e) => onSpecimenStorageDescriptionTextChange?.(e.target.value)}
+                                  disabled={!onSpecimenStorageDescriptionTextChange}
+                                />
+                                {specimensUnlinked && (
+                                  <div className="mt-2 flex items-start gap-2 rounded-md bg-muted/40 border border-muted px-3 py-2">
+                                    <Lock className="h-3.5 w-3.5 mt-0.5 text-muted-foreground shrink-0" />
+                                    <p className="text-sm leading-relaxed text-muted-foreground">
+                                      Because your specimens will not be linked to your name after they are stored, you cannot withdraw your consent to the use of the specimens after they are taken.
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </>
                         )}
                       </>
