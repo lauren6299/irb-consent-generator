@@ -64,6 +64,7 @@ interface Props {
   onSpecimenStorageDescriptionTextChange?: (text: string) => void;
   specimensUnlinked?: boolean;
   includeHipaaAuthorization?: boolean;
+  includeSensitiveInformationAuthorization?: boolean;
 }
 
 const CONTENT_TYPE_LABELS: Record<string, { label: string; icon: React.ElementType; className: string }> = {
@@ -119,7 +120,7 @@ function parseEditableFields(fields: unknown[] | null | undefined): EditableFiel
 /** Clause keys suppressed in preview because they are replaced by dedicated editable fields */
 const SUPPRESSED_CLAUSE_KEYS = new Set(['enrollment_statement', 'future_use_intro', 'future_use_not_allowed']);
 
-export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false, includeHipaaAuthorization = false }: Props) {
+export default function ConsentPreview({ clauses, study, edits = {}, onEditChange, showAdultChildBox = false, includeSummary = true, conciseSummaryText = '', onConciseSummaryTextChange, purposeEnrollmentText = '', onPurposeEnrollmentTextChange, collectsSpecimens = false, futureResearchUseAllowed = false, specimenStorageDescriptionText = '', onSpecimenStorageDescriptionTextChange, specimensUnlinked = false, includeHipaaAuthorization = false, includeSensitiveInformationAuthorization = false }: Props) {
   const grouped = CONSENT_SECTIONS.reduce((acc, section) => {
     acc[section] = clauses.filter((c) => c.section === section && !SUPPRESSED_CLAUSE_KEYS.has(c.clause_key));
     return acc;
@@ -439,15 +440,19 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
               </p>
             </div>
 
-            <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
-            <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
-            <ul className="list-none pl-2 space-y-1">
-              <li>☐ I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.</li>
-              <li>☐ I agree to the release of my HIV/AIDS testing information.</li>
-              <li>☐ I agree to the release of my genetic testing information.</li>
-              <li>☐ I agree to the release of information pertaining to my mental health diagnosis or treatment.</li>
-              <li>☐ I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).</li>
-            </ul>
+            {includeSensitiveInformationAuthorization && (
+              <>
+                <p className="font-semibold">Do I have to give my permission for the disclosure of certain specific types of information?</p>
+                <p>Yes. The following information will only be released if you give your specific permission by putting your initials in the boxes:</p>
+                <ul className="list-none pl-2 space-y-1">
+                  <li>☐ I agree to the release of information pertaining to my drug and alcohol abuse, diagnosis or treatment.</li>
+                  <li>☐ I agree to the release of my HIV/AIDS testing information.</li>
+                  <li>☐ I agree to the release of my genetic testing information.</li>
+                  <li>☐ I agree to the release of information pertaining to my mental health diagnosis or treatment.</li>
+                  <li>☐ I agree to the release of my information for the optional research activities described in the consent form (such as the creation of a database, tissue repository, or other activities).</li>
+                </ul>
+              </>
+            )}
 
             <p className="font-semibold">Who may use, share, or receive my information?</p>
             <p>The research records may be used and shared with others who are working with us on this research. This includes:</p>
