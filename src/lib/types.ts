@@ -2,8 +2,6 @@ export interface StudyAnswers {
   // Population
   population_adults: boolean;
   population_children: boolean;
-  population_healthy: boolean;
-  population_disease: boolean;
   includes_adults: boolean;
   includes_children: boolean;
 
