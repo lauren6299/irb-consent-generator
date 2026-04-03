@@ -40,7 +40,7 @@ const CLAUSE_CATALOGUE: IncludedClause[] = [
   makeClause({ clause_key: 'risks_section', section: 'risks', must_include: true, required_level: 'required', sort_order: 100, child_only_text: 'Child-only risks text' }),
 
   // Adult+child mixed intro
-  makeClause({ clause_key: 'adult_child_mixed_intro', section: 'header', trigger_expression: { includes_adults: true, includes_children: true }, sort_order: 2 }),
+  makeClause({ clause_key: 'adult_child_mixed_intro', section: 'header', trigger_expression: { population_adults: true, includes_children: true }, sort_order: 2 }),
 
   // Future use / specimens
   makeClause({ clause_key: 'future_use_intro', section: 'procedures', insertion_anchor: 'future_use_of_information_and_specimens', trigger_expression: { collects_specimens: true }, sort_order: 40 }),
@@ -78,7 +78,7 @@ describe('Consent assembly scenarios', () => {
   describe('adult_only_minimal', () => {
     const result = assembleConsentForm(
       CLAUSE_CATALOGUE,
-      answers({ population_adults: true, includes_adults: true }),
+      answers({ population_adults: true }),
     );
     const k = keys(result);
 
@@ -131,7 +131,7 @@ describe('Consent assembly scenarios', () => {
   describe('mixed_adult_child', () => {
     const result = assembleConsentForm(
       CLAUSE_CATALOGUE,
-      answers({ population_adults: true, population_children: true, includes_adults: true, includes_children: true }),
+      answers({ population_adults: true, population_children: true, includes_children: true }),
     );
     const k = keys(result);
 
@@ -151,7 +151,7 @@ describe('Consent assembly scenarios', () => {
   describe('specimens_study_only', () => {
     const a = answers({
       population_adults: true,
-      includes_adults: true,
+      
       specimen_storage_mode: 'stored_for_this_study_only',
       collects_specimens: true,
       future_research_use_allowed: false,
@@ -184,7 +184,7 @@ describe('Consent assembly scenarios', () => {
   describe('specimens_future_research', () => {
     const a = answers({
       population_adults: true,
-      includes_adults: true,
+      
       specimen_storage_mode: 'stored_for_future_research',
       collects_specimens: true,
       future_research_use_allowed: true,
@@ -219,7 +219,7 @@ describe('Consent assembly scenarios', () => {
       CLAUSE_CATALOGUE,
       answers({
         population_adults: true,
-        includes_adults: true,
+        
         includes_genetics_section: false,
         includes_genetic_testing: false,
       }),

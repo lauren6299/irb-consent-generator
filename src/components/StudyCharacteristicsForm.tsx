@@ -65,7 +65,7 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
         <BoolGrid answers={answers} onChange={onChange} items={[
           ['population_adults', 'Adults'],
           ['population_children', 'Children'],
-          ['includes_adults', 'Includes Adults (trigger)'],
+          
           ['includes_children', 'Includes Children (trigger)'],
         ]} />
       </Section>
