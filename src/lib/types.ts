@@ -151,8 +151,6 @@ export function resolveClauseTextVariant(
 export const DEFAULT_STUDY_ANSWERS: StudyAnswers = {
   population_adults: false,
   population_children: false,
-  population_healthy: false,
-  population_disease: false,
   includes_adults: false,
   includes_children: false,
   procedure_blood_draw: false,
