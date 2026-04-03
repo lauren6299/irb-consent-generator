@@ -736,9 +736,6 @@ export async function generateConsentDocx(
         children.push(bodyParagraph(line));
       }
     }
-    if (answers?.specimens_unlinked) {
-      children.push(bodyParagraph(UNLINKED_STATEMENT));
-    }
   }
 
   /** Inject the "Future Use of Private Information and/or Specimens" verbatim block */

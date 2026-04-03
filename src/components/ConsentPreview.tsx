@@ -327,14 +327,6 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                                   onChange={(e) => onSpecimenStorageDescriptionTextChange?.(e.target.value)}
                                   disabled={!onSpecimenStorageDescriptionTextChange}
                                 />
-                                {specimensUnlinked && (
-                                  <div className="mt-2 flex items-start gap-2 rounded-md bg-muted/40 border border-muted px-3 py-2">
-                                    <Lock className="h-3.5 w-3.5 mt-0.5 text-muted-foreground shrink-0" />
-                                    <p className="text-sm leading-relaxed text-muted-foreground">
-                                      Because your specimens will not be linked to your name after they are stored, you cannot withdraw your consent to the use of the specimens after they are taken.
-                                    </p>
-                                  </div>
-                                )}
                               </div>
                             )}
                           </>
