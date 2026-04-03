@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import StudySetupForm from '@/components/StudySetupForm';
 import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
+import IRBReadinessTab from '@/components/IRBReadinessTab';
 import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
 import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubjectMode } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
