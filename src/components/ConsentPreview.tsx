@@ -303,11 +303,11 @@ export default function ConsentPreview({ clauses, study, edits = {}, onEditChang
                                     ? 'Research using private information and/or specimens is an important way to try to understand human disease. The investigators would like to store your private information and/or specimens for possible future research.'
                                     : 'Research using private information and/or specimens is an important way to try to understand human disease. In this study, your private information and/or specimens will only be used for the purposes described in this consent form.'}
                                 </p>
-                                <p className="text-sm leading-relaxed">
-                                  {futureResearchUseAllowed
-                                    ? 'Identifiers might be removed from identifiable private information and/or identifiable specimens and, after such removal, the information and/or specimens could be used for future research studies or distributed to another investigator for future research studies without additional informed consent from you.'
-                                    : 'Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.'}
-                                </p>
+                                {!futureResearchUseAllowed && (
+                                  <p className="text-sm leading-relaxed">
+                                    Your information and/or specimens will not be used or distributed for future research studies even if all identifying information is removed.
+                                  </p>
+                                )}
                               </div>
                             )}
 
