@@ -3,9 +3,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FilePlus, FolderOpen, Copy, Library, FileText, Settings, LogOut } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { FilePlus, FolderOpen, Copy, Library, FileText, Settings, LogOut, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Study {
   id: string;
@@ -18,6 +23,8 @@ export default function Dashboard() {
   const { user, isAdmin, signOut } = useAuth();
   const [studies, setStudies] = useState<Study[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<Study | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -31,6 +38,20 @@ export default function Dashboard() {
         setLoading(false);
       });
   }, [user]);
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    const { error } = await supabase.from('studies').delete().eq('id', deleteTarget.id);
+    if (error) {
+      toast.error('Unable to delete draft. Please try again.');
+    } else {
+      setStudies((prev) => prev.filter((s) => s.id !== deleteTarget.id));
+      toast.success('Draft deleted');
+    }
+    setDeleting(false);
+    setDeleteTarget(null);
+  }
 
   const drafts = studies.filter((s) => s.status === 'draft');
   const completed = studies.filter((s) => s.status === 'completed');
@@ -116,22 +137,28 @@ export default function Dashboard() {
           ) : (
             <div className="grid gap-3">
               {drafts.map((s) => (
-                <Link key={s.id} to={`/study/${s.id}`}>
-                  <Card className="hover:border-primary/30 transition-colors cursor-pointer">
-                    <CardContent className="flex items-center justify-between py-4">
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{s.title}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline">{s.status}</Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(s.updated_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <Card key={s.id} className="hover:border-primary/30 transition-colors">
+                  <CardContent className="flex items-center justify-between py-4">
+                    <Link to={`/study/${s.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                      <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span className="font-medium truncate">{s.title}</span>
+                    </Link>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <Badge variant="outline">{s.status}</Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(s.updated_at).toLocaleDateString()}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={(e) => { e.preventDefault(); setDeleteTarget(s); }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}
@@ -166,6 +193,28 @@ export default function Dashboard() {
           Final IRB and institutional review required before use
         </p>
       </main>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this draft? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? 'Deleting…' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
