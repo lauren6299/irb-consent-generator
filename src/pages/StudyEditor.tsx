@@ -283,6 +283,16 @@ export default function StudyEditor() {
             >
               Characteristics
             </button>
+            <button
+              className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+                activeTab === 'irb_readiness'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => setActiveTab('irb_readiness')}
+            >
+              IRB Readiness Check
+            </button>
           </div>
           <ScrollArea className="flex-1 p-4">
             {activeTab === 'setup' ? (
