@@ -717,13 +717,6 @@ export async function generateConsentDocx(
   const shouldInjectFutureUse = !!(answers?.collects_specimens);
   const shouldInjectSpecimenStorage = !!(answers?.collects_specimens);
 
-  const UNLINKED_STATEMENT = 'Because your specimens will not be linked to your name after they are stored, you cannot withdraw your consent to the use of the specimens after they are taken.';
-
-  // Validate unlinked specimen statement availability
-  if (answers?.specimens_unlinked) {
-    // The unlinked statement is always injected verbatim, so no validation needed for missing text.
-    // But we validate it's not somehow suppressed.
-  }
 
   /** Inject specimen storage description block */
   function injectSpecimenStorageBlock() {
