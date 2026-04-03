@@ -14,6 +14,7 @@ import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubje
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
 import { generateConsentDocx } from '@/lib/docx-export';
 import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
+import FontSizeSelector from '@/components/FontSizeSelector';
 
 interface StudyInfo {
   title: string;
@@ -227,6 +228,7 @@ export default function StudyEditor() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <FontSizeSelector />
             {documentMode === 'child_only' && (
               <Badge variant="outline" className="gap-1 text-blue-600 border-blue-500/30">
                 Child-Only Mode

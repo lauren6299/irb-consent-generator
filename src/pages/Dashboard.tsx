@@ -10,6 +10,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { FilePlus, FolderOpen, Copy, Library, FileText, Settings, LogOut, Trash2 } from 'lucide-react';
+import FontSizeSelector from '@/components/FontSizeSelector';
 import { toast } from 'sonner';
 
 interface Study {
@@ -68,6 +69,7 @@ export default function Dashboard() {
             <h1 className="font-heading text-lg font-semibold text-foreground">IRB Consent Builder</h1>
           </div>
           <div className="flex items-center gap-3">
+            <FontSizeSelector />
             <span className="text-sm text-muted-foreground">{user?.email}</span>
             {isAdmin && <Badge variant="secondary">Admin</Badge>}
             <Button variant="ghost" size="icon" onClick={signOut}><LogOut className="h-4 w-4" /></Button>

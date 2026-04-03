@@ -64,6 +64,16 @@
 }
 
 @layer base {
+  :root.font-scale-small {
+    font-size: 14px;
+  }
+  :root.font-scale-medium {
+    font-size: 16px;
+  }
+  :root.font-scale-large {
+    font-size: 18px;
+  }
+
   * {
     @apply border-border;
   }
