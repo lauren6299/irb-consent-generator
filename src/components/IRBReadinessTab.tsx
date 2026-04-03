@@ -44,20 +44,20 @@ export default function IRBReadinessTab() {
   const pct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-xl mx-auto space-y-5 print:max-w-none print:mx-0">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold text-foreground">IRB Readiness Check</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Use this checklist to review your exported and edited consent form before IRB submission.
         </p>
       </div>
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex items-center justify-between gap-4 flex-wrap print:hidden">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <Progress value={pct} className="h-2 flex-1 max-w-xs" />
-          <span className="text-sm text-muted-foreground whitespace-nowrap">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
             {completedCount} of {totalCount} items reviewed
           </span>
         </div>
@@ -73,22 +73,24 @@ export default function IRBReadinessTab() {
 
       {/* Sections */}
       {IRB_READINESS_CHECKLIST.map((section) => (
-        <Card key={section.title}>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold">{section.title}</CardTitle>
+        <Card key={section.title} className="shadow-none border">
+          <CardHeader className="px-4 py-3 pb-2">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {section.title}
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2.5">
+          <CardContent className="px-4 pb-4 space-y-2">
             {section.items.map((item) => (
               <label
                 key={item.id}
-                className="flex items-start gap-2.5 cursor-pointer group"
+                className="flex items-center gap-2.5 cursor-pointer group"
               >
                 <Checkbox
                   checked={!!checked[item.id]}
                   onCheckedChange={() => toggle(item.id)}
-                  className="mt-0.5"
+                  className="shrink-0"
                 />
-                <span className="text-sm text-foreground leading-snug group-hover:text-primary transition-colors">
+                <span className="text-xs text-foreground leading-normal group-hover:text-primary transition-colors">
                   {item.label}
                 </span>
               </label>
