@@ -10,6 +10,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { FilePlus, FolderOpen, Copy, Library, FileText, Settings, LogOut, Trash2 } from 'lucide-react';
+import FontSizeSelector from '@/components/FontSizeSelector';
 import { toast } from 'sonner';
 
 interface Study {
