@@ -204,9 +204,7 @@ export function getMissingRequiredFields(answers: StudyAnswers): string[] {
 
   const hasPopulation =
     answers.population_adults ||
-    answers.population_children ||
-    answers.population_healthy ||
-    answers.population_disease;
+    answers.population_children;
   if (!hasPopulation) missing.push('At least one population must be selected');
 
   const hasProcedure =
