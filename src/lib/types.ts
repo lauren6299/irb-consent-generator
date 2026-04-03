@@ -2,7 +2,7 @@ export interface StudyAnswers {
   // Population
   population_adults: boolean;
   population_children: boolean;
-  includes_adults: boolean;
+  
   includes_children: boolean;
 
   // Procedures
