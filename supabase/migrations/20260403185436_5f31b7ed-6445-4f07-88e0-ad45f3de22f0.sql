@@ -1,0 +1,1 @@
+UPDATE public.clauses SET active = false WHERE id = '00fdc57a-7a76-4555-b0b0-39b79b34cc97';
