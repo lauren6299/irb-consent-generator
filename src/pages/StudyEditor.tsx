@@ -297,8 +297,10 @@ export default function StudyEditor() {
           <ScrollArea className="flex-1 p-4">
             {activeTab === 'setup' ? (
               <StudySetupForm study={study} onChange={setStudy} />
-            ) : (
+            ) : activeTab === 'characteristics' ? (
               <StudyCharacteristicsForm answers={answers} onChange={setAnswers} />
+            ) : (
+              <IRBReadinessTab />
             )}
           </ScrollArea>
         </div>
