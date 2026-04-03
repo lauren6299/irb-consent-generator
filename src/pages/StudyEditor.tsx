@@ -228,6 +228,7 @@ export default function StudyEditor() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
+            <FontSizeSelector />
             {documentMode === 'child_only' && (
               <Badge variant="outline" className="gap-1 text-blue-600 border-blue-500/30">
                 Child-Only Mode
