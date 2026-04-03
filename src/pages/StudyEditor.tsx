@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import StudySetupForm from '@/components/StudySetupForm';
 import StudyCharacteristicsForm from '@/components/StudyCharacteristicsForm';
+import IRBReadinessTab from '@/components/IRBReadinessTab';
 import ConsentPreview, { ClauseEdits } from '@/components/ConsentPreview';
 import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubjectMode } from '@/lib/types';
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
@@ -42,7 +43,7 @@ const DEFAULT_STUDY_INFO: StudyInfo = {
   irb_number: '',
 };
 
-type Tab = 'setup' | 'characteristics';
+type Tab = 'setup' | 'characteristics' | 'irb_readiness';
 
 export default function StudyEditor() {
   const { id } = useParams<{ id: string }>();
@@ -283,12 +284,24 @@ export default function StudyEditor() {
             >
               Characteristics
             </button>
+            <button
+              className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
+                activeTab === 'irb_readiness'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+              onClick={() => setActiveTab('irb_readiness')}
+            >
+              IRB Readiness Check
+            </button>
           </div>
           <ScrollArea className="flex-1 p-4">
             {activeTab === 'setup' ? (
               <StudySetupForm study={study} onChange={setStudy} />
-            ) : (
+            ) : activeTab === 'characteristics' ? (
               <StudyCharacteristicsForm answers={answers} onChange={setAnswers} />
+            ) : (
+              <IRBReadinessTab />
             )}
           </ScrollArea>
         </div>
