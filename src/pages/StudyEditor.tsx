@@ -42,7 +42,7 @@ const DEFAULT_STUDY_INFO: StudyInfo = {
   irb_number: '',
 };
 
-type Tab = 'setup' | 'characteristics';
+type Tab = 'setup' | 'characteristics' | 'irb_readiness';
 
 export default function StudyEditor() {
   const { id } = useParams<{ id: string }>();
