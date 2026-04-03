@@ -216,7 +216,8 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
                 <SelectContent>
                   <SelectItem value="none">No Results Returned</SelectItem>
                   <SelectItem value="clinical_only">Clinical Results Only</SelectItem>
-                  <SelectItem value="choice_or_recontact">Choice / Re-contact</SelectItem>
+                  <SelectItem value="inform_results">Inform Participant of Results</SelectItem>
+                  <SelectItem value="recontact_results">Re-contact Participant About Results</SelectItem>
                 </SelectContent>
               </Select>
             </div>

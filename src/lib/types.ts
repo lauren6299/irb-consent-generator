@@ -43,7 +43,7 @@ export interface StudyAnswers {
   includes_genetics_section: boolean;
   includes_genetic_testing: boolean;
   whole_genome_sequencing_choice: boolean;
-  return_results_policy: 'none' | 'clinical_only' | 'choice_or_recontact' | '';
+  return_results_policy: 'none' | 'clinical_only' | 'inform_results' | 'recontact_results' | '';
   deposits_genetic_data_in_nih_repository: boolean;
 
   // MRI
