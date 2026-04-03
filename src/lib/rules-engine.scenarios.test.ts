@@ -40,7 +40,7 @@ const CLAUSE_CATALOGUE: IncludedClause[] = [
   makeClause({ clause_key: 'risks_section', section: 'risks', must_include: true, required_level: 'required', sort_order: 100, child_only_text: 'Child-only risks text' }),
 
   // Adult+child mixed intro
-  makeClause({ clause_key: 'adult_child_mixed_intro', section: 'header', trigger_expression: { includes_adults: true, includes_children: true }, sort_order: 2 }),
+  makeClause({ clause_key: 'adult_child_mixed_intro', section: 'header', trigger_expression: { population_adults: true, includes_children: true }, sort_order: 2 }),
 
   // Future use / specimens
   makeClause({ clause_key: 'future_use_intro', section: 'procedures', insertion_anchor: 'future_use_of_information_and_specimens', trigger_expression: { collects_specimens: true }, sort_order: 40 }),
