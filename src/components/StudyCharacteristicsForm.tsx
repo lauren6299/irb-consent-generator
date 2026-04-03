@@ -73,7 +73,7 @@ export default function StudyCharacteristicsForm({ answers, onChange }: Props) {
       {/* Procedures */}
       <Section title="Procedures">
         <BoolGrid answers={answers} onChange={onChange} items={[
-          ['procedure_blood_draw', 'Blood Draw'],
+          ['procedure_blood_draw', 'Specimen Collection'],
           ['procedure_genetic_testing', 'Genetic Testing'],
           ['procedure_imaging', 'Imaging'],
           ['procedure_surveys_only', 'Surveys Only'],
