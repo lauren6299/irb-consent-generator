@@ -14,6 +14,7 @@ import { StudyAnswers, DEFAULT_STUDY_ANSWERS, CONSENT_SECTIONS, getDocumentSubje
 import { assembleConsentForm, getMissingRequiredFields } from '@/lib/rules-engine';
 import { generateConsentDocx } from '@/lib/docx-export';
 import { ArrowLeft, Save, Download, AlertTriangle } from 'lucide-react';
+import FontSizeSelector from '@/components/FontSizeSelector';
 
 interface StudyInfo {
   title: string;
